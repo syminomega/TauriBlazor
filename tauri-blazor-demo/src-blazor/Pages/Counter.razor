@@ -1,0 +1,26 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+<div class="item-group">
+    <h1>Counter</h1>
+    <p role="status">Current count: @_currentCount</p>
+    <button @onclick="IncrementCount">Click me</button>
+</div>
+<style scoped>
+    .item-group{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+       
+    }
+</style>
+
+@code {
+    private int _currentCount = 0;
+
+    private void IncrementCount()
+    {
+        _currentCount++;
+    }
+}

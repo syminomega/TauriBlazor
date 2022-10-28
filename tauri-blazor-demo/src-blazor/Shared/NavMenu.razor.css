@@ -1,0 +1,7 @@
+.nav-top{
+    display: flex;
+    flex-direction: row;
+}
+.nav-item{
+    margin: 4px;
+}

@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauriBlazor", "tauri-blazor-demo\src-blazor\TauriBlazor.csproj", "{BA2E5FEF-C314-4201-9BD0-20A1461E6369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauriApi", "TauriApi\TauriApi.csproj", "{8EF9B61F-A062-4526-9147-9B03177F63D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA2E5FEF-C314-4201-9BD0-20A1461E6369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA2E5FEF-C314-4201-9BD0-20A1461E6369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA2E5FEF-C314-4201-9BD0-20A1461E6369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA2E5FEF-C314-4201-9BD0-20A1461E6369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EF9B61F-A062-4526-9147-9B03177F63D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EF9B61F-A062-4526-9147-9B03177F63D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EF9B61F-A062-4526-9147-9B03177F63D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EF9B61F-A062-4526-9147-9B03177F63D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
