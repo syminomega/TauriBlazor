@@ -1,0 +1,47 @@
+@page "/Examples"
+@using System.Text.Json.Serialization
+@inject TauriApi.Tauri Tauri
+@inject TauriApi.Window Window
+@inject TauriApi.Event Event
+
+<h3>Examples</h3>
+
+<div class="card">
+    <button type="button" @onclick="AddRandomNumListener">Add Random Num Listener</button>
+    <button type="button" @onclick="RemoveRandomNumListener">Remove Random Num Listener</button>
+    <div>Random Num: @_randomNum</div>
+    <button type="button" @onclick="GetRandomNumber">Get Random Num</button>
+</div>
+
+@code {
+    private int _randomNum;
+
+    class TestData
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = "";
+        [JsonPropertyName("rand_num")]
+        public int RandNum { get; set; }
+    }
+
+    private async Task GetRandomNumber()
+    {
+        await Tauri.Invoke("emit_random_number");
+    }
+
+    private async Task AddRandomNumListener()
+    {
+        var window = await Window.AppWindow.Value;
+        await window.Listen<TestData>("random-number", data =>
+        {
+            _randomNum = data.RandNum;
+        });
+    }
+
+    private async Task RemoveRandomNumListener()
+    {
+        var window = await Window.AppWindow.Value;
+        await window.Unlisten("random-number");
+    }
+
+}

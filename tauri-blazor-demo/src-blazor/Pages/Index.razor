@@ -1,4 +1,5 @@
 @page "/"
+@inject TauriApi.Tauri Tauri
 
 <PageTitle>Welcome</PageTitle>
 <div class="container">
@@ -28,9 +29,14 @@
         </a>
     </p>
     <Greet/>
+    <div @onclick="OpenExamplesWindow">View More Examples</div>
 
 </div>
 
 @code {
 
+    private async Task OpenExamplesWindow()
+    {
+        await Tauri.Invoke("open_example_window");
+    }
 }

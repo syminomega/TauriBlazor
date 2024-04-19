@@ -7,6 +7,7 @@
 *.ntvs*
 *.njsproj
 *.sw?
+**/*.DotSettings.user
 
 # Build Cache
 bin/

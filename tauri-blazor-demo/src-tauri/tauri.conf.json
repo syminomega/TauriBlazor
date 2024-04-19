@@ -1,6 +1,6 @@
 {
   "build": {
-    "beforeDevCommand": "dotnet run --project ./src-blazor/TauriBlazor.csproj",
+    "beforeDevCommand": "",
     "beforeBuildCommand": "dotnet publish ./src-blazor/TauriBlazor.csproj -c Release  -o ./dist -p:BlazorEnableCompression=false",
     "devPath": "http://localhost:5220",
     "distDir": "../dist/wwwroot",
@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "tauri-blazor-demo",
-    "version": "0.0.0"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -48,17 +48,19 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousUseHttpScheme": true
     },
     "updater": {
       "active": false
     },
+    "macOSPrivateApi": true,
     "windows": [
       {
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tauri-blazor-demo",
+        "title": "Tauri Blazor Demo",
         "width": 800
       }
     ]
