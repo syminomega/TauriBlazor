@@ -2,6 +2,9 @@ using Microsoft.JSInterop;
 
 namespace TauriApi;
 
+/// <summary>
+/// TauriApp base class
+/// </summary>
 public class App
 {
     private readonly IJSRuntime _jsRuntime;
