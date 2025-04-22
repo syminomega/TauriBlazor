@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauriApi", "TauriApi\TauriApi.csproj", "{BCACAF97-63CE-45D4-A8B1-CDE11086C044}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauriBlazorDemo", "tauri-blazor-demo\src\TauriBlazorDemo.csproj", "{650C5115-3173-405E-AC42-A11A53A32D6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BCACAF97-63CE-45D4-A8B1-CDE11086C044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCACAF97-63CE-45D4-A8B1-CDE11086C044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCACAF97-63CE-45D4-A8B1-CDE11086C044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCACAF97-63CE-45D4-A8B1-CDE11086C044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650C5115-3173-405E-AC42-A11A53A32D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650C5115-3173-405E-AC42-A11A53A32D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650C5115-3173-405E-AC42-A11A53A32D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650C5115-3173-405E-AC42-A11A53A32D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

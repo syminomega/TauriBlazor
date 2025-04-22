@@ -5,7 +5,7 @@ namespace TauriApi;
 public class Tauri
 {
     private readonly IJSRuntime _jsRuntime;
-    private const string Prefix = "__TAURI__.tauri";
+    private const string Prefix = "__TAURI__.core";
 
     public Tauri(IJSRuntime jsRuntime)
     {
