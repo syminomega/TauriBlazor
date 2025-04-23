@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using TauriApi.Utilities;
+using TauriApi;
 using TauriBlazorDemo;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

@@ -1,6 +1,4 @@
 ﻿@page "/"
-@using TauriApi
-@inject IJSRuntime JsRuntime
 @inject Tauri Tauri
 
 <main class="container">
@@ -31,6 +29,8 @@
 
     private async Task GreetAsync()
     {
-        GreetMsg = await Tauri.Invoke<string>("greet", new { name = GreetInput });
+        GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
+        var window = await Tauri.Window.GetCurrentWindow();
+        await window.Center();
     }
 }

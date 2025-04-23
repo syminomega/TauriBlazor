@@ -12,3 +12,4 @@
 # Build Cache
 bin/
 obj/
+TauriApi/wwwroot/js/tauri-api.js

@@ -1,15 +1,18 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
-namespace TauriApi;
+namespace TauriApi.Utilities;
 
 public class TauriJsInterop : IAsyncDisposable
 {
     private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
+    private readonly ILogger<TauriJsInterop> _logger;
 
-    public TauriJsInterop(IJSRuntime jsRuntime)
+    public TauriJsInterop(IJSRuntime jsRuntime, ILogger<TauriJsInterop> logger)
     {
         _moduleTask = new(jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/SyminStudio.TauriApi/js/tauri-api.js").AsTask);
+        _logger = logger;
     }
 
     #region Event
@@ -30,37 +33,13 @@ public class TauriJsInterop : IAsyncDisposable
 
     #endregion
 
-    #region Window
-
-    public async Task<IJSObjectReference> GetAppWindow()
+    public async Task<IJSObjectReference> ConstructWindow(string label, WindowOptions? options)
     {
         var module = await _moduleTask.Value;
-        var appWindow = await module.InvokeAsync<IJSObjectReference>("getAppWindow");
+        var appWindow = await module.InvokeAsync<IJSObjectReference>("constructWindow", label, options);
         return appWindow;
     }
 
-    public async Task<string> GetAppWindowLabel(IJSObjectReference appWindow)
-    {
-        var module = await _moduleTask.Value;
-        var label = await module.InvokeAsync<string>("getWebviewWindowLabel", appWindow);
-        return label;
-    }
-
-    public async Task WindowListen(IJSObjectReference appWindow, string eventName)
-    {
-        var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("addWindowListenBind", appWindow, eventName);
-        //在window类中添加监听
-    }
-
-    public async Task WindowUnlisten(IJSObjectReference appWindow, string eventName)
-    {
-        var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("removeWindowListenBind", appWindow, eventName);
-        //在window类中移除绑定
-    }
-
-    #endregion
 
     public async ValueTask DisposeAsync()
     {

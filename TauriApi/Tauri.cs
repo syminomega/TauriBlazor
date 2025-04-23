@@ -1,38 +1,23 @@
-﻿using Microsoft.JSInterop;
+﻿using TauriApi.Modules;
 
 namespace TauriApi;
 
 public class Tauri
 {
-    private readonly IJSRuntime _jsRuntime;
-    private const string Prefix = "__TAURI__.core";
-
-    public Tauri(IJSRuntime jsRuntime)
+    public Tauri(
+        TauriApp tauriApp, 
+        TauriCore tauriCore, 
+        TauriEvent tauriEvent, 
+        TauriWindow tauriWindow)
     {
-        _jsRuntime = jsRuntime;
+        App = tauriApp;
+        Core = tauriCore;
+        Event = tauriEvent;
+        Window = tauriWindow;
     }
 
-    #region Invoke
-
-    public async Task<T> Invoke<T>(string funcName, object paramObject)
-    {
-        return await _jsRuntime.InvokeAsync<T>($"{Prefix}.invoke", funcName, paramObject);
-    }
-
-    public async Task<T> Invoke<T>(string funcName)
-    {
-        return await _jsRuntime.InvokeAsync<T>($"{Prefix}.invoke", funcName);
-    }
-
-    public async Task Invoke(string funcName, object paramObject)
-    {
-        await _jsRuntime.InvokeVoidAsync($"{Prefix}.invoke", funcName, paramObject);
-    }
-
-    public async Task Invoke(string funcName)
-    {
-        await _jsRuntime.InvokeVoidAsync($"{Prefix}.invoke", funcName);
-    }
-
-    #endregion
+    public TauriApp App { get;  }
+    public TauriCore Core { get;  }
+    public TauriEvent Event { get;  }
+    public TauriWindow Window { get; }
 }
