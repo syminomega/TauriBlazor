@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
+#pragma warning disable CS1591
+
 namespace TauriApi.Utilities;
 
 public class TauriJsInterop : IAsyncDisposable
@@ -17,21 +19,17 @@ public class TauriJsInterop : IAsyncDisposable
 
     #region Event
 
-    public async Task Listen(string eventName)
+    public async Task<IJSObjectReference> ListenEvent(
+        string eventName, DotNetObjectReference<ITauriEventHandler> eventHandler, EventOptions? options)
     {
         var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("addListenBind", eventName);
-        //在event类中添加监听
-    }
-
-    public async Task Unlisten(string eventName)
-    {
-        var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("removeListenBind", eventName);
-        //在event类中移除绑定
+        var eventRef = await module.InvokeAsync<IJSObjectReference>("listenEvent", eventName, eventHandler, options);
+        return eventRef;
     }
 
     #endregion
+
+    #region Window
 
     public async Task<IJSObjectReference> ConstructWindow(string label, WindowOptions? options)
     {
@@ -40,6 +38,7 @@ public class TauriJsInterop : IAsyncDisposable
         return appWindow;
     }
 
+    #endregion
 
     public async ValueTask DisposeAsync()
     {

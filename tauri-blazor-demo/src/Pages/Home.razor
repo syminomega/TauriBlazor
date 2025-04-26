@@ -19,6 +19,9 @@
         <button type="submit">Greet</button>
     </form>
     <p>@GreetMsg</p>
+    <button @onclick="ListenClick">listen</button>
+    <button @onclick="EmitClick">emit</button>
+    <p>@_eventTest</p>
 </main>
 
 @code
@@ -32,5 +35,21 @@
         GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
         var window = await Tauri.Window.GetCurrentWindow();
         await window.Center();
+    }
+
+    private string _eventTest = "eventTest";
+
+    private async Task ListenClick()
+    {
+        var unlisten = await Tauri.Event.Listen("mytest", () =>
+        {
+            _eventTest = "success!";
+            StateHasChanged();
+        });
+    }
+
+    private async Task EmitClick()
+    {
+        await Tauri.Event.Emit("mytest");
     }
 }

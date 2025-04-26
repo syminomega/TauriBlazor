@@ -3,18 +3,30 @@ using TauriApi.Utilities;
 
 namespace TauriApi.Modules;
 
+/// <summary>
+/// Provides APIs to create windows, communicate with other windows and manipulate the current window.
+/// </summary>
 public class TauriWindow
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.window";
     private readonly TauriJsInterop _tauriJsInterop;
 
+    /// <summary>
+    /// Inject TauriWindow.
+    /// </summary>
     public TauriWindow(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;
     }
-
+    
+    /// <summary>
+    /// Creates a new Window.
+    /// </summary>
+    /// <param name="label">The unique window label. Must be alphanumeric: a-zA-Z-/:_.</param>
+    /// <param name="options"></param>
+    /// <returns>The Window instance to communicate with the window.</returns>
     public async Task<Window> CreateWindow(string label, WindowOptions? options)
     {
         var windowRef = await _tauriJsInterop.ConstructWindow(label, options);
@@ -22,6 +34,27 @@ public class TauriWindow
         return window;
     }
 
+    /// <summary>
+    /// Gets a list of instances of Window for all available windows.
+    /// </summary>
+    /// <returns></returns>
+    // TODO: Test this method.
+    private async Task<Window[]> GetAllWindows()
+    {
+        var windowRefs = await _jsRuntime.InvokeAsync<IJSObjectReference[]>($"{Prefix}.getAllWindows");
+        var windows = new Window[windowRefs.Length];
+        for (var i = 0; i < windowRefs.Length; i++)
+        {
+            windows[i] = new Window(windowRefs[i]);
+        }
+
+        return windows;
+    }
+
+    /// <summary>
+    /// Get an instance of Window for the current window.
+    /// </summary>
+    /// <returns></returns>
     public async Task<Window> GetCurrentWindow()
     {
         var windowRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.getCurrentWindow");
