@@ -17,6 +17,12 @@ public class TauriJsInterop : IAsyncDisposable
         _logger = logger;
     }
 
+    public async ValueTask<T> GetJsProperty<T>(IJSObjectReference obj, string propPath)
+    {
+        var module = await _moduleTask.Value;
+        return await module.InvokeAsync<T>("getPropertyInObject", obj, propPath);
+    }
+
     #region Event
 
     public async Task<IJSObjectReference> ListenEvent(

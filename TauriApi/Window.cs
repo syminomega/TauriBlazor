@@ -1,5 +1,6 @@
 using Microsoft.JSInterop;
 using TauriApi.Interfaces;
+using TauriApi.Utilities;
 
 namespace TauriApi;
 
@@ -10,13 +11,21 @@ namespace TauriApi;
 /// </summary>
 public class Window : ITauriWindow
 {
-    internal Window(IJSObjectReference windowRef)
+    internal Window(IJSObjectReference windowRef, TauriJsInterop tauriJsInterop)
     {
+        _tauriJsInterop = tauriJsInterop;
         JsObjectRef = windowRef;
     }
 
+    private readonly TauriJsInterop _tauriJsInterop;
+
     /// <inheritdoc />
     public IJSObjectReference JsObjectRef { get; }
+
+    /// <summary>
+    /// The window label. It is a unique identifier for the window, can be used to reference it later.
+    /// </summary>
+    public ValueTask<string> Label => _tauriJsInterop.GetJsProperty<string>(JsObjectRef, "label");
 }
 
 /// <summary>
@@ -101,9 +110,11 @@ public class Monitor
 {
 }
 
+#pragma warning disable CS1591
 public record WindowOptions
 {
     public bool? AlwaysOnBottom { get; init; }
+
 
     public bool? AlwaysOnTop { get; init; }
 
@@ -119,15 +130,19 @@ public record WindowOptions
     public bool? HiddenTitle { get; init; }
 }
 
+#pragma warning restore CS1591
+
 #endregion
 
 #region Type Aliases
 
+#pragma warning disable CS1591
 public enum Theme
 {
     Light,
     Dark,
     System
 }
+#pragma warning restore CS1591
 
 #endregion

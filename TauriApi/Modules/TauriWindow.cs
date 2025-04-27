@@ -20,7 +20,7 @@ public class TauriWindow
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;
     }
-    
+
     /// <summary>
     /// Creates a new Window.
     /// </summary>
@@ -30,7 +30,7 @@ public class TauriWindow
     public async Task<Window> CreateWindow(string label, WindowOptions? options)
     {
         var windowRef = await _tauriJsInterop.ConstructWindow(label, options);
-        var window = new Window(windowRef);
+        var window = new Window(windowRef, _tauriJsInterop);
         return window;
     }
 
@@ -45,7 +45,7 @@ public class TauriWindow
         var windows = new Window[windowRefs.Length];
         for (var i = 0; i < windowRefs.Length; i++)
         {
-            windows[i] = new Window(windowRefs[i]);
+            windows[i] = new Window(windowRefs[i], _tauriJsInterop);
         }
 
         return windows;
@@ -58,7 +58,7 @@ public class TauriWindow
     public async Task<Window> GetCurrentWindow()
     {
         var windowRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.getCurrentWindow");
-        var window = new Window(windowRef);
+        var window = new Window(windowRef, _tauriJsInterop);
         return window;
     }
 }

@@ -13,10 +13,10 @@
         <Copyright>Copyright (c) 2022 SyminStudio</Copyright>
         <RepositoryUrl>https://github.com/syminomega/TauriBlazor</RepositoryUrl>
         <Company>SyminStudio</Company>
-        <PackageTags>Blazor;Tauri;Multi platform</PackageTags>
+        <PackageTags>Blazor;Tauri;Multi-Platform</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>Migrate APIs to tauri v2. Using new inject methods.</PackageReleaseNotes>
+        <PackageReleaseNotes>Add Tauri Event listener.</PackageReleaseNotes>
         <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
 

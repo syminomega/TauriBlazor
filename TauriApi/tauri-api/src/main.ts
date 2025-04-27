@@ -2,6 +2,21 @@ import {Window, WindowOptions} from "@tauri-apps/api/window";
 import {listen, UnlistenFn, Options} from "@tauri-apps/api/event";
 import {DotNet} from "@microsoft/dotnet-js-interop";
 
+export function getPropertyInObject(obj: any, propPath: string) {
+    if (obj === null || obj === undefined) {
+        return null;
+    }
+    const props = propPath.split('.');
+    let current = obj;
+    for (const p of props) {
+        if (current[p] === undefined) {
+            return null;
+        }
+        current = current[p];
+    }
+    return current;
+}
+
 export function constructWindow(label: string, options?: WindowOptions) {
     return new Window(label, options);
 }
