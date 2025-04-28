@@ -12,7 +12,44 @@ This template should help get you started developing with Tauri in Blazor, C#, C
 1. run `dotnet watch` in the `tauri-blazor-demo/src/` directory to start the frontend.
 2. run `cargo tauri dev` in the `tauri-blazor-demo/src-tauri/` directory to start the application in development mode.
 
+## How To Use
+1. Add nuget package to your project.
+```
+dotnet add package SyminStudio.TauriApi --version 0.4.2
+```
+1. Add following contents to your `Program.cs` file.
+```csharp
+using TauriApi;
+// ...
+builder.Services.AddTauriApi();
+// ...
+```
+2. Add global using to the `_Imports.razor` file.
+```razor
+@using TauriApi
+```
+3. Now you can inject and use api in your components.
+```razor
+@inject Tauri Tauri
+<YourComponents/>
+@code{
+    private string? GreetInput { get; set; }
+    private string? GreetMsg { get; set; }
+
+    private async Task GreetAsync()
+    {
+        GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
+    }
+}
+```
+
+## Supported APIs
+> The module `@tauri-apps/api/{moduleName}` is mapped to `Tauri.{ModuleName}` property.
+> The constructor of the class is mapped to `Tauri.{ModuleName}.Create{ClassName}()` method.
+
+WIP
+
 ## Warning
 
-This template is not yet ready for production. It is a work in progress and should not be used in production applications. It is intended for development and testing purposes only. Use at your own risk.
-This package **only** supports Tauri 2.0 since version 0.3.0. If you are using Tauri 1.x, please use the `v0.2.x` version of this package.
+This package is not yet ready for production. It is a work in progress and should not be used in production applications. It is intended for development and testing purposes only. Use at your own risk. 
+This package **only** supports Tauri 2.0 since version 0.3.0. 
