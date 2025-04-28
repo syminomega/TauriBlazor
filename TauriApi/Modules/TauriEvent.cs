@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TauriApi.Utilities;
 
@@ -62,40 +63,41 @@ public class TauriEvent
     /// Listen to an emitted event to any <see cref="EventTarget"/>.
     /// </summary>
     /// <param name="eventName">Tauri build-in event.</param>
-    /// <param name="handler">Event handler callback.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
     /// <param name="options">Event listening options.</param>
     /// <typeparam name="TR">Callback value</typeparam>
     /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
-    public async Task<UnlistenFn> Listen<TR>(TauriEventName eventName, Action<TR> handler, EventOptions? options = null)
+    public async Task<UnlistenFn> Listen<TR>(TauriEventName eventName, Func<TR, Task> callbackAsync,
+        EventOptions? options = null)
     {
         var eventNameString = eventName.GetTauriEventName();
-        return await Listen(eventNameString, handler, options);
+        return await Listen(eventNameString, callbackAsync, options);
     }
 
     /// <summary>
     /// Listen to an emitted event to any <see cref="EventTarget"/>.
     /// </summary>
     /// <param name="eventName">Tauri build-in event.</param>
-    /// <param name="handler">Event handler callback.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
     /// <param name="options">Event listening options.</param>
     /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
-    public async Task<UnlistenFn> Listen(TauriEventName eventName, Action handler, EventOptions? options = null)
+    public async Task<UnlistenFn> Listen(TauriEventName eventName, Func<Task> callbackAsync, EventOptions? options = null)
     {
         var eventNameString = eventName.GetTauriEventName();
-        return await Listen(eventNameString, handler, options);
+        return await Listen(eventNameString, callbackAsync, options);
     }
 
     /// <summary>
     /// Listen to an emitted event to any <see cref="EventTarget"/>.
     /// </summary>
     /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="handler">Event handler callback.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
     /// <param name="options">Event listening options.</param>
     /// <typeparam name="TR">Callback value</typeparam>
     /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
-    public async Task<UnlistenFn> Listen<TR>(string eventName, Action<TR> handler, EventOptions? options = null)
+    public async Task<UnlistenFn> Listen<TR>(string eventName, Func<TR, Task> callbackAsync, EventOptions? options = null)
     {
-        var eventHandler = _tauriEventManager.CreateEventHandler(handler);
+        var eventHandler = _tauriEventManager.CreateEventHandler(callbackAsync);
         var jsHandler = await _tauriJsInterop.ListenEvent(eventName,
             DotNetObjectReference.Create<ITauriEventHandler>(eventHandler), options);
         eventHandler.HandlerRef = jsHandler;
@@ -106,12 +108,12 @@ public class TauriEvent
     /// Listen to an emitted event to any <see cref="EventTarget"/>.
     /// </summary>
     /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="handler">Event handler callback.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
     /// <param name="options">Event listening options.</param>
     /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
-    public async Task<UnlistenFn> Listen(string eventName, Action handler, EventOptions? options = null)
+    public async Task<UnlistenFn> Listen(string eventName, Func<Task> callbackAsync, EventOptions? options = null)
     {
-        var eventHandler = _tauriEventManager.CreateEventHandler(handler);
+        var eventHandler = _tauriEventManager.CreateEventHandler(callbackAsync);
         var jsHandler = await _tauriJsInterop.ListenEvent(eventName,
             DotNetObjectReference.Create<ITauriEventHandler>(eventHandler), options);
         eventHandler.HandlerRef = jsHandler;
@@ -122,7 +124,66 @@ public class TauriEvent
 
     #region Once
 
-    
+    /// <summary>
+    /// Listen once to an emitted event to any <see cref="EventTarget"/>.
+    /// </summary>
+    /// <param name="eventName">Tauri build-in event.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
+    /// <param name="options">Event listening options.</param>
+    /// <typeparam name="TR">Callback value</typeparam>
+    /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
+    public async Task<UnlistenFn> Once<TR>(TauriEventName eventName, Func<TR, Task> callbackAsync,
+        EventOptions? options = null)
+    {
+        var eventNameString = eventName.GetTauriEventName();
+        return await Once(eventNameString, callbackAsync, options);
+    }
+
+    /// <summary>
+    /// Listen once to an emitted event to any <see cref="EventTarget"/>.
+    /// </summary>
+    /// <param name="eventName">Tauri build-in event.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
+    /// <param name="options">Event listening options.</param>
+    /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
+    public async Task<UnlistenFn> Once(TauriEventName eventName, Func<Task> callbackAsync, EventOptions? options = null)
+    {
+        var eventNameString = eventName.GetTauriEventName();
+        return await Once(eventNameString, callbackAsync, options);
+    }
+
+    /// <summary>
+    /// Listen once to an emitted event to any <see cref="EventTarget"/>.
+    /// </summary>
+    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
+    /// <param name="options">Event listening options.</param>
+    /// <typeparam name="TR">Callback value</typeparam>
+    /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
+    public async Task<UnlistenFn> Once<TR>(string eventName, Func<TR, Task> callbackAsync, EventOptions? options = null)
+    {
+        var eventHandler = _tauriEventManager.CreateEventHandler(callbackAsync, once: true);
+        var jsHandler = await _tauriJsInterop.OnceEvent(eventName,
+            DotNetObjectReference.Create<ITauriEventHandler>(eventHandler), options);
+        eventHandler.HandlerRef = jsHandler;
+        return eventHandler.Unlisten;
+    }
+
+    /// <summary>
+    /// Listen once to an emitted event to any <see cref="EventTarget"/>.
+    /// </summary>
+    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
+    /// <param name="callbackAsync">Event handler callback.</param>
+    /// <param name="options">Event listening options.</param>
+    /// <returns>A function to unlisten to the event. Note that removing the listener is required if your listener goes out of scope e.g. the component is disposed.</returns>
+    public async Task<UnlistenFn> Once(string eventName, Func<Task> callbackAsync, EventOptions? options = null)
+    {
+        var eventHandler = _tauriEventManager.CreateEventHandler(callbackAsync, once: true);
+        var jsHandler = await _tauriJsInterop.OnceEvent(eventName,
+            DotNetObjectReference.Create<ITauriEventHandler>(eventHandler), options);
+        eventHandler.HandlerRef = jsHandler;
+        return eventHandler.Unlisten;
+    }
 
     #endregion
 }

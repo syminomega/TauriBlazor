@@ -1,5 +1,5 @@
 import {Window, WindowOptions} from "@tauri-apps/api/window";
-import {listen, UnlistenFn, Options} from "@tauri-apps/api/event";
+import {listen, once, UnlistenFn, Options} from "@tauri-apps/api/event";
 import {DotNet} from "@microsoft/dotnet-js-interop";
 
 export function getPropertyInObject(obj: any, propPath: string) {
@@ -43,6 +43,20 @@ export async function listenEvent(eventName: string, callbackHandler: DotNet.Dot
             payload = event.payload;
         }
         await callbackHandler.invokeMethodAsync("InvokeEvent", payload);
+    }, options);
+
+    return new UnlistenHandler(unlistenFn, callbackHandler);
+}
+
+export async function onceEvent(eventName: string, callbackHandler: DotNet.DotNetObject, options?: Options): Promise<UnlistenHandler> {
+    const unlistenFn = await once(eventName, async (event) => {
+        let payload = null;
+        if (event.payload) {
+            payload = event.payload;
+        }
+        await callbackHandler.invokeMethodAsync("InvokeEvent", payload);
+        // dispose the callback handler after the first event
+        callbackHandler.dispose();
     }, options);
 
     return new UnlistenHandler(unlistenFn, callbackHandler);

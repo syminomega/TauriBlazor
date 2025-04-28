@@ -16,16 +16,16 @@ public class TauriEventManager
         _eventHandlers.Remove(handler);
     }
 
-    public TauriEventHandler CreateEventHandler(Action callback)
+    public TauriEventHandler CreateEventHandler(Func<Task> callback, bool once = false)
     {
-        var eventHandler = new TauriEventHandler(this, callback);
+        var eventHandler = new TauriEventHandler(this, callback, once);
         _eventHandlers.Add(eventHandler);
         return eventHandler;
     }
 
-    public TauriEventHandler<T> CreateEventHandler<T>(Action<T> callback)
+    public TauriEventHandler<T> CreateEventHandler<T>(Func<T, Task> callback, bool once = false)
     {
-        var eventHandler = new TauriEventHandler<T>(this, callback);
+        var eventHandler = new TauriEventHandler<T>(this, callback, once);
         _eventHandlers.Add(eventHandler);
         return eventHandler;
     }
@@ -45,7 +45,7 @@ public interface ITauriEventHandler
     /// Invokes the event callback.
     /// </summary>
     /// <param name="payload"></param>
-    public void InvokeEvent(object? payload);
+    public Task InvokeEvent(object? payload);
 
     /// <summary>
     /// Unlisten function to remove the event handler.
@@ -62,10 +62,11 @@ public interface ITauriEventHandler
 /// <inheritdoc />
 public class TauriEventHandler : ITauriEventHandler
 {
-    internal TauriEventHandler(TauriEventManager eventManager, Action callback)
+    internal TauriEventHandler(TauriEventManager eventManager, Func<Task> callback, bool once)
     {
         _eventManager = eventManager;
         _callback = callback;
+        _once = once;
     }
 
     /// <inheritdoc />
@@ -73,14 +74,29 @@ public class TauriEventHandler : ITauriEventHandler
 
     private readonly TauriEventManager _eventManager;
 
+    private readonly bool _once;
+    private bool _onceTriggered;
 
     [JSInvokable]
-    public void InvokeEvent(object? payload)
+    public async Task InvokeEvent(object? payload)
     {
-        _callback.Invoke();
+        // TODO: 改为异步回调
+        await _callback.Invoke();
+        if (_once)
+        {
+            _onceTriggered = true;
+            if (HandlerRef == null)
+            {
+                throw new NullReferenceException("HandlerRef is null. Did you forget to set it?");
+            }
+
+            await HandlerRef.InvokeVoidAsync("unlisten");
+            _eventManager.RemoveEventHandler(this);
+            await HandlerRef.DisposeAsync();
+        }
     }
 
-    private readonly Action _callback;
+    private readonly Func<Task> _callback;
 
     /// <inheritdoc />
     public bool Disposed { get; private set; }
@@ -102,19 +118,23 @@ public class TauriEventHandler : ITauriEventHandler
 
             Disposed = true;
             // Trigger unlisten in tauri
-            await HandlerRef.InvokeVoidAsync("unlisten");
-            _eventManager.RemoveEventHandler(this);
-            await HandlerRef.DisposeAsync();
+            if (!_onceTriggered)
+            {
+                await HandlerRef.InvokeVoidAsync("unlisten");
+                _eventManager.RemoveEventHandler(this);
+                await HandlerRef.DisposeAsync();
+            }
         };
 }
 
 /// <inheritdoc />
 public class TauriEventHandler<T> : ITauriEventHandler
 {
-    internal TauriEventHandler(TauriEventManager eventManager, Action<T> callback)
+    internal TauriEventHandler(TauriEventManager eventManager, Func<T, Task> callback, bool once)
     {
         _eventManager = eventManager;
         _callback = callback;
+        _once = once;
     }
 
     /// <inheritdoc />
@@ -122,17 +142,33 @@ public class TauriEventHandler<T> : ITauriEventHandler
 
     private readonly TauriEventManager _eventManager;
 
+    private readonly bool _once;
+    private bool _onceTriggered;
+
     [JSInvokable]
-    public void InvokeEvent(T payload)
+    public async Task InvokeEvent(T payload)
     {
-        _callback.Invoke(payload);
+        // TODO: 改为异步回调
+        await _callback.Invoke(payload);
+        if (_once)
+        {
+            _onceTriggered = true;
+            if (HandlerRef == null)
+            {
+                throw new NullReferenceException("HandlerRef is null. Did you forget to set it?");
+            }
+
+            await HandlerRef.InvokeVoidAsync("unlisten");
+            _eventManager.RemoveEventHandler(this);
+            await HandlerRef.DisposeAsync();
+        }
     }
 
-    void ITauriEventHandler.InvokeEvent(object? payload)
+    async Task ITauriEventHandler.InvokeEvent(object? payload)
     {
         if (payload is T typedPayload)
         {
-            InvokeEvent(typedPayload);
+            await InvokeEvent(typedPayload);
         }
         else
         {
@@ -140,7 +176,7 @@ public class TauriEventHandler<T> : ITauriEventHandler
         }
     }
 
-    private readonly Action<T> _callback;
+    private readonly Func<T, Task> _callback;
 
     /// <inheritdoc />
     public bool Disposed { get; private set; }
@@ -162,8 +198,11 @@ public class TauriEventHandler<T> : ITauriEventHandler
 
             Disposed = true;
             // Trigger unlisten in tauri
-            await HandlerRef.InvokeVoidAsync("unlisten");
-            _eventManager.RemoveEventHandler(this);
-            await HandlerRef.DisposeAsync();
+            if (!_onceTriggered)
+            {
+                await HandlerRef.InvokeVoidAsync("unlisten");
+                _eventManager.RemoveEventHandler(this);
+                await HandlerRef.DisposeAsync();
+            }
         };
 }

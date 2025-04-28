@@ -32,6 +32,14 @@ public class TauriJsInterop : IAsyncDisposable
         var eventRef = await module.InvokeAsync<IJSObjectReference>("listenEvent", eventName, eventHandler, options);
         return eventRef;
     }
+    
+    public async Task<IJSObjectReference> OnceEvent(
+        string eventName, DotNetObjectReference<ITauriEventHandler> eventHandler, EventOptions? options)
+    {
+        var module = await _moduleTask.Value;
+        var eventRef = await module.InvokeAsync<IJSObjectReference>("onceEvent", eventName, eventHandler, options);
+        return eventRef;
+    }
 
     #endregion
 

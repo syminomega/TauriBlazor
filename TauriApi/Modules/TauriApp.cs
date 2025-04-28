@@ -10,6 +10,10 @@ public class TauriApp
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.app";
 
+    /// <summary>
+    /// Inject TauriApp
+    /// </summary>
+    /// <param name="jsRuntime"></param>
     public TauriApp(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
