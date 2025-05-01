@@ -6,6 +6,7 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "core:window:allow-center"
+    "core:window:allow-center",
+    "core:app:allow-default-window-icon"
   ]
 }

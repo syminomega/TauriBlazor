@@ -21,6 +21,7 @@ public static class ServiceManager
         services.AddSingleton<TauriApp>();
         services.AddSingleton<TauriCore>();
         services.AddSingleton<TauriEvent>();
+        services.AddSingleton<TauriImage>();
         services.AddSingleton<TauriWindow>();
         services.AddSingleton<TauriWebview>();
         services.AddSingleton<TauriWebviewWindow>();

@@ -19,13 +19,6 @@
         <button type="submit">Greet</button>
     </form>
     <p>@GreetMsg</p>
-    <div class="row">
-        <button @onclick="ListenEvent">Listen</button>
-        <button @onclick="TriggerEvent">Emit</button>
-        <button @onclick="UnlistenEvent">Unlisten</button>
-    </div>
-    <p>@_listenCount</p>
-    <p>@_onceCount</p>
 </main>
 
 @code
@@ -39,35 +32,4 @@
         GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
     }
 
-
-    private async Task ListenEvent()
-    {
-        _unlistenEvent = await Tauri.Event.Listen("testListen", () =>
-        {
-            _listenCount++;
-            return Task.CompletedTask;
-        });
-        _unlistenOnce = await Tauri.Event.Once("testOnce", () =>
-        {
-            _onceCount++;
-            return Task.CompletedTask;
-        });
-    }
-
-    int _listenCount;
-    int _onceCount;
-    UnlistenFn? _unlistenEvent;
-    UnlistenFn? _unlistenOnce;
-
-    private async Task TriggerEvent()
-    {
-        await Tauri.Event.Emit("testListen");
-        await Tauri.Event.Emit("testOnce");
-    }
-
-    private async Task UnlistenEvent()
-    {
-        if (_unlistenEvent != null) await _unlistenEvent.Invoke();
-        if (_unlistenOnce != null) await _unlistenOnce.Invoke();
-    }
 }

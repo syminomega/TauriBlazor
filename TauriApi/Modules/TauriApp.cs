@@ -1,4 +1,5 @@
 using Microsoft.JSInterop;
+using TauriApi.Utilities;
 
 namespace TauriApi.Modules;
 
@@ -9,14 +10,31 @@ public class TauriApp
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.app";
+    private readonly TauriJsInterop _tauriJsInterop;
 
     /// <summary>
     /// Inject TauriApp
     /// </summary>
-    /// <param name="jsRuntime"></param>
-    public TauriApp(IJSRuntime jsRuntime)
+    public TauriApp(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
+        _tauriJsInterop = tauriJsInterop;
+    }
+
+    /// <summary>
+    /// Get the default window icon.
+    /// </summary>
+    /// <returns></returns>
+    public async Task<Image?> DefaultWindowIcon()
+    {
+        var imageRef = await _jsRuntime.InvokeAsync<IJSObjectReference?>($"{Prefix}.defaultWindowIcon");
+        if (imageRef == null)
+        {
+            return null;
+        }
+
+        var rid = await _tauriJsInterop.GetJsProperty<long>(imageRef, "rid");
+        return new Image(imageRef, rid);
     }
 
     /// <summary>
