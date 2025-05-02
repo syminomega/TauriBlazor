@@ -13,7 +13,7 @@ public class TauriImage
     private readonly TauriJsInterop _tauriJsInterop;
 
     /// <summary>
-    /// 注入TauriImage
+    /// Inject TauriImage
     /// </summary>
     public TauriImage(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {

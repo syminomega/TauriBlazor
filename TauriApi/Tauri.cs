@@ -15,6 +15,7 @@ public class Tauri
         TauriCore tauriCore,
         TauriEvent tauriEvent,
         TauriImage tauriImage,
+        TauriPath tauriPath,
         TauriWindow tauriWindow,
         TauriWebview tauriWebview,
         TauriWebviewWindow tauriWebviewWindow)
@@ -23,6 +24,7 @@ public class Tauri
         Core = tauriCore;
         Event = tauriEvent;
         Image = tauriImage;
+        Path = tauriPath;
         Window = tauriWindow;
         Webview = tauriWebview;
         WebviewWindow = tauriWebviewWindow;
@@ -47,6 +49,11 @@ public class Tauri
     /// @tauri-apps/api/image
     /// </summary>
     public TauriImage Image { get; }
+    
+    /// <summary>
+    /// @tauri-apps/api/path
+    /// </summary>
+    public TauriPath Path { get; }
 
     /// <summary>
     /// @tauri-apps/api/window
