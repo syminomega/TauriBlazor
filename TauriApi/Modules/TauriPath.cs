@@ -40,7 +40,7 @@ public class TauriPath
     {
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.appConfigDir");
     }
-    
+
     /// <summary>
     /// Returns the path to the suggested directory for your app’s data files.
     /// Resolves to <c>${cacheDir}/${bundleIdentifier}</c>, where <c>bundleIdentifier</c> is
@@ -51,7 +51,7 @@ public class TauriPath
     {
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.appDataDir");
     }
-    
+
     /// <summary>
     /// Returns the path to the suggested directory for your app’s local data files.
     /// Resolves to <c>${cacheDir}/${bundleIdentifier}</c>, where <c>bundleIdentifier</c> is
@@ -74,4 +74,38 @@ public class TauriPath
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.appLogDir");
     }
 
+    /// <summary>
+    /// Returns the path to the user’s audio directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_MUSIC_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Music</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Music}</c>.</li>
+    /// </summary>
+    public ValueTask<string> AudioDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.audioDir");
+    }
+    
+    /// <summary>
+    /// Returns the last portion of a <c>path</c>. Trailing directory separators are ignored.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="ext">An optional file extension to be removed from the returned path.</param>
+    /// <returns></returns>
+    public ValueTask<string> BaseName(string path, string? ext = null)
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.basename", path, ext);
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s cache directory.
+    /// <li>Linux: Resolves to <c>$XDG_CACHE_HOME</c> or <c>$HOME/.cache</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Library/Caches</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_LocalAppData}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> CacheDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.cacheDir");
+    }
 }

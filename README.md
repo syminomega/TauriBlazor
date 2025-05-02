@@ -15,22 +15,26 @@ This template should help get you started developing with Tauri in Blazor, C#, C
 ## How To Use
 1. Add nuget package to your project.
 ```
-dotnet add package SyminStudio.TauriApi --version 0.4.2
+dotnet add package SyminStudio.TauriApi --version 0.4.3
 ```
 1. Add following contents to your `Program.cs` file.
 ```csharp
 using TauriApi;
+using TauriApi.Plugins;
 // ...
 builder.Services.AddTauriApi();
+builder.Services.AddTauriPlugin<TauriOpener>();
 // ...
 ```
 2. Add global using to the `_Imports.razor` file.
 ```razor
 @using TauriApi
+@using TauriApi.Plugins
 ```
 3. Now you can inject and use api in your components.
 ```razor
 @inject Tauri Tauri
+@inject TauriOpener Opener
 <YourComponents/>
 @code{
     private string? GreetInput { get; set; }
@@ -39,13 +43,15 @@ builder.Services.AddTauriApi();
     private async Task GreetAsync()
     {
         GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
+        await Opener.OpenPath("https://demosite")
     }
 }
 ```
 
 ## Supported APIs
 > The module `@tauri-apps/api/{moduleName}` is mapped to `Tauri.{ModuleName}` property.
-> The constructor of the class is mapped to `Tauri.{ModuleName}.Create{ClassName}()` method.
+> The constructor of the class is mapped to `Tauri.{ModuleName}.Create{ClassName}()` method. 
+> The plugins are mapped to `Tauri{PluginName}` class. 
 
 WIP
 

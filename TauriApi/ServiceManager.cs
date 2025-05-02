@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TauriApi.Interfaces;
 using TauriApi.Modules;
 using TauriApi.Utilities;
 
@@ -26,5 +27,13 @@ public static class ServiceManager
         services.AddSingleton<TauriWindow>();
         services.AddSingleton<TauriWebview>();
         services.AddSingleton<TauriWebviewWindow>();
+    }
+
+    /// <summary>
+    /// Adds a Tauri plugin to the service collection.
+    /// </summary>
+    public static void AddTauriPlugin<T>(this IServiceCollection services) where T : class, ITauriPlugin
+    {
+        services.AddSingleton<T>();
     }
 }
