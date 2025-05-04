@@ -1,6 +1,5 @@
 using Microsoft.JSInterop;
 using TauriApi.Interfaces;
-using TauriApi.Plugins.Objects;
 using TauriApi.Utilities;
 
 namespace TauriApi.Plugins;

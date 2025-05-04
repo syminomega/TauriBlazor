@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace TauriApi.Plugins.Objects;
+namespace TauriApi.Plugins;
 
 /// <summary>
 /// The Tauri abstraction for reading and writing files.

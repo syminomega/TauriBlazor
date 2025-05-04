@@ -108,4 +108,83 @@ public class TauriPath
     {
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.cacheDir");
     }
+
+    /// <summary>
+    /// Returns the path to the user’s config directory.
+    /// <li>Linux: Resolves to <c>$XDG_CONFIG_HOME</c> or <c>$HOME/.config</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Library/Application Support</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_RoamingAppData}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> ConfigDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.configDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s data directory.
+    /// <li>Linux: Resolves to <c>$XDG_DATA_HOME</c> or <c>$HOME/.local/share</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Library/Application Support</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_RoamingAppData}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> DataDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.dataDir");
+    }
+
+    /// <summary>
+    /// Returns the platform-specific path segment delimiter:
+    /// <li><c>;</c> on Windows</li>
+    /// <li><c>:</c> on POSIX</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> Delimiter()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.delimiter");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s desktop directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_DESKTOP_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Desktop</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Desktop}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> DesktopDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.desktopDir");
+    }
+
+    /// <summary>
+    /// Returns the directory name of a <c>path</c>. Trailing directory separators are ignored.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> Dirname()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.dirname");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s document directory.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> DocumentDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.documentDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s download directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_DOWNLOAD_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Downloads</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Downloads}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> DownloadDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.downloadDir");
+    }
 }
