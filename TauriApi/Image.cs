@@ -1,29 +1,14 @@
 using Microsoft.JSInterop;
-using TauriApi.Interfaces;
 
 namespace TauriApi;
 
 /// <summary>
 /// An RGBA Image in row-major order from top to bottom.
 /// </summary>
-public class Image : Resource, ITauriObject
+public class Image : Resource
 {
-    /// <inheritdoc />
-    public IJSObjectReference JsObjectRef { get; }
-
-    /// <inheritdoc />
-    public override long Rid { get; }
-
-    /// <inheritdoc />
-    public override async Task Close()
+    internal Image(IJSObjectReference jsObjectRef, long rid) : base(jsObjectRef, rid)
     {
-        await JsObjectRef.InvokeVoidAsync("close");
-    }
-
-    internal Image(IJSObjectReference jsObjectRef, long rid)
-    {
-        JsObjectRef = jsObjectRef;
-        Rid = rid;
     }
 
     /// <summary>

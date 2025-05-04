@@ -9,7 +9,7 @@ namespace TauriApi.Plugins;
 public class TauriOpener : ITauriPlugin
 {
     private readonly IJSRuntime _jsRuntime;
-
+    private const string Prefix = "__TAURI__.opener";
     /// <summary>
     /// Inject TauriOpener.
     /// </summary>
@@ -17,8 +17,6 @@ public class TauriOpener : ITauriPlugin
     {
         _jsRuntime = jsRuntime;
     }
-
-    private const string Prefix = "__TAURI__.opener";
 
     /// <summary>
     /// Opens a path with the system’s default app, or the one specified with openWith.
