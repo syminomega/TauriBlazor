@@ -85,7 +85,7 @@ public class TauriPath
     {
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.audioDir");
     }
-    
+
     /// <summary>
     /// Returns the last portion of a <c>path</c>. Trailing directory separators are ignored.
     /// </summary>
@@ -186,5 +186,213 @@ public class TauriPath
     public ValueTask<string> DownloadDir()
     {
         return _jsRuntime.InvokeAsync<string>($"{Prefix}.downloadDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s executable directory.
+    /// <li>Linux: Resolves to <c>$XDG_BIN_HOME/../bin</c> or
+    /// <c>$XDG_DATA_HOME/../bin</c> or <c>$HOME/.local/bin</c>.</li>
+    /// <li>macOS: Not supported.</li>
+    /// <li>Windows: Not supported.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> ExecutableDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.executableDir");
+    }
+
+    /// <summary>
+    /// Returns the extension of the <c>path</c>.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> ExtName()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.extname");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s font directory.
+    /// <li>Linux: Resolves to <c>$XDG_DATA_HOME/fonts</c> or <c>$HOME/.local/share/fonts</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Library/Fonts</c>.</li>
+    /// <li>Windows: Not supported.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> FontDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.fontDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s home directory.
+    /// <li>Linux: Resolves to <c>$HOME</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Profile}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> HomeDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.homeDir");
+    }
+
+    /// <summary>
+    /// Returns whether the path is absolute or not.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<bool> IsAbsolute()
+    {
+        return _jsRuntime.InvokeAsync<bool>($"{Prefix}.isAbsolute");
+    }
+
+    /// <summary>
+    /// Joins all given <c>path</c> segments together using the platform-specific separator as a delimiter,
+    /// then normalizes the resulting path.
+    /// </summary>
+    /// <param name="paths"></param>
+    /// <returns></returns>
+    // TODO: not tested
+    public ValueTask<string> Join(params string[] paths)
+    {
+        var pathList = paths.ToList();
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.join", pathList);
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s local data directory.
+    /// <li>Linux: Resolves to <c>$XDG_DATA_HOME</c> or <c>$HOME/.local/share</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Library/Application Support</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_LocalAppData}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> LocalDataDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.localDataDir");
+    }
+
+    // ReSharper disable once GrammarMistakeInComment
+    /// <summary>
+    /// Normalizes the given <c>path</c>, resolving <c>'..'</c> and <c>'.'</c> segments and resolve symbolic links.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public ValueTask<string> Normalize(string path)
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.normalize", path);
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s picture directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_PICTURES_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Pictures</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Pictures}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> PictureDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.pictureDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s public directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_PUBLICSHARE_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Public</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Public}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> PublicDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.publicDir");
+    }
+
+    /// <summary>
+    /// Resolves a sequence of <c>paths</c> or <c>path</c> segments into an absolute path.
+    /// </summary>
+    /// <param name="paths"></param>
+    /// <returns></returns>
+    // TODO: not tested
+    public ValueTask<string> Resolve(params string[] paths)
+    {
+        var pathList = paths.ToList();
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.resolve", pathList);
+    }
+
+    /// <summary>
+    /// Resolve the path to a resource file.
+    /// </summary>
+    /// <param name="resourcePath">The path to the resource. Must follow the same syntax as defined in
+    /// <c>tauri.conf.json > bundle > resources</c>, i.e. keeping subfolders and parent dir components (../).</param>
+    /// <returns>The full path to the resource.</returns>
+    public ValueTask<string> ResolveResource(string resourcePath)
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.resolveResource", resourcePath);
+    }
+
+    /// <summary>
+    /// Returns the path to the application’s resource directory.
+    /// To resolve a resource path, see the [[resolveResource | resolveResource API]].
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> ResourceDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.resourceDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s runtime directory.
+    /// <li>Linux: Resolves to <c>$XDG_RUNTIME_DIR</c>.</li>
+    /// <li>macOS: Not supported.</li>
+    /// <li>Windows: Not supported.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> RuntimeDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.runtimeDir");
+    }
+
+    /// <summary>
+    /// Returns the platform-specific path segment separator:
+    /// <li><c>\</c> on Windows</li>
+    /// <li><c>/</c> on POSIX</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> Sep()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.sep");
+    }
+
+    /// <summary>
+    /// Returns a temporary directory.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> TempDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.tempDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s template directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_TEMPLATES_DIR</c>.</li>
+    /// <li>macOS: Not supported.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Templates}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> TemplateDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.templateDir");
+    }
+
+    /// <summary>
+    /// Returns the path to the user’s video directory.
+    /// <li>Linux: Resolves to <a href="https://www.freedesktop.org/wiki/Software/xdg-user-dirs/">xdg-user-dir</a>'s
+    /// <c>XDG_VIDEOS_DIR</c>.</li>
+    /// <li>macOS: Resolves to <c>$HOME/Movies</c>.</li>
+    /// <li>Windows: Resolves to <c>{FOLDERID_Videos}</c>.</li>
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<string> VideoDir()
+    {
+        return _jsRuntime.InvokeAsync<string>($"{Prefix}.videoDir");
     }
 }
