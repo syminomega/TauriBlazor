@@ -47,6 +47,7 @@ builder.Services.AddTauriPlugin<TauriOpener>();
     }
 }
 ```
+>Warning: If you are using structured data as return type from rust, make sure that the data is serialized into camel case format, or received as snake case format.
 
 ## Supported APIs
 > The module `@tauri-apps/api/{moduleName}` is mapped to `Tauri.{ModuleName}` property.
