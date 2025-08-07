@@ -5,5 +5,5 @@ namespace TauriApi.Modules;
 /// </summary>
 public class TauriWebviewWindow
 {
-    
+    // TODO:
 }

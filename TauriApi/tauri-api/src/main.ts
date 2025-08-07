@@ -17,8 +17,13 @@ export function getPropertyInObject(obj: any, propPath: string) {
     return current;
 }
 
-export function constructWindow(label: string, options?: WindowOptions) {
-    return new Window(label, options);
+export function constructWindow(label: string, options?: WindowOptions | null) {
+    if (options === null || options === undefined) {
+        options = undefined;
+    }
+    let window = new Window(label, options);
+    console.log("Constructing window with label: " + label);
+    return window;
 }
 
 class UnlistenHandler {

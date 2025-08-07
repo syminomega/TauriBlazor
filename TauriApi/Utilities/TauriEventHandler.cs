@@ -5,33 +5,6 @@ using Microsoft.JSInterop;
 namespace TauriApi.Utilities;
 
 /// <summary>
-/// TauriEventManager is responsible for managing the event handlers.
-/// </summary>
-public class TauriEventManager
-{
-    private readonly List<ITauriEventHandler> _eventHandlers = new();
-
-    public void RemoveEventHandler(ITauriEventHandler handler)
-    {
-        _eventHandlers.Remove(handler);
-    }
-
-    public TauriEventHandler CreateEventHandler(Func<Task> callback, bool once = false)
-    {
-        var eventHandler = new TauriEventHandler(this, callback, once);
-        _eventHandlers.Add(eventHandler);
-        return eventHandler;
-    }
-
-    public TauriEventHandler<T> CreateEventHandler<T>(Func<T, Task> callback, bool once = false)
-    {
-        var eventHandler = new TauriEventHandler<T>(this, callback, once);
-        _eventHandlers.Add(eventHandler);
-        return eventHandler;
-    }
-}
-
-/// <summary>
 /// Interface for TauriEventHandler.
 /// </summary>
 public interface ITauriEventHandler
@@ -62,17 +35,15 @@ public interface ITauriEventHandler
 /// <inheritdoc />
 public class TauriEventHandler : ITauriEventHandler
 {
-    internal TauriEventHandler(TauriEventManager eventManager, Func<Task> callback, bool once)
+    internal TauriEventHandler(Func<Task> callback, bool once)
     {
-        _eventManager = eventManager;
         _callback = callback;
         _once = once;
     }
 
     /// <inheritdoc />
     public IJSObjectReference? HandlerRef { get; set; }
-
-    private readonly TauriEventManager _eventManager;
+    
 
     private readonly bool _once;
     private bool _onceTriggered;
@@ -80,7 +51,6 @@ public class TauriEventHandler : ITauriEventHandler
     [JSInvokable]
     public async Task InvokeEvent(object? payload)
     {
-        // TODO: 改为异步回调
         await _callback.Invoke();
         if (_once)
         {
@@ -91,7 +61,6 @@ public class TauriEventHandler : ITauriEventHandler
             }
 
             await HandlerRef.InvokeVoidAsync("unlisten");
-            _eventManager.RemoveEventHandler(this);
             await HandlerRef.DisposeAsync();
         }
     }
@@ -121,7 +90,6 @@ public class TauriEventHandler : ITauriEventHandler
             if (!_onceTriggered)
             {
                 await HandlerRef.InvokeVoidAsync("unlisten");
-                _eventManager.RemoveEventHandler(this);
                 await HandlerRef.DisposeAsync();
             }
         };
@@ -130,9 +98,8 @@ public class TauriEventHandler : ITauriEventHandler
 /// <inheritdoc />
 public class TauriEventHandler<T> : ITauriEventHandler
 {
-    internal TauriEventHandler(TauriEventManager eventManager, Func<T, Task> callback, bool once)
+    internal TauriEventHandler(Func<T, Task> callback, bool once)
     {
-        _eventManager = eventManager;
         _callback = callback;
         _once = once;
     }
@@ -140,15 +107,12 @@ public class TauriEventHandler<T> : ITauriEventHandler
     /// <inheritdoc />
     public IJSObjectReference? HandlerRef { get; set; }
 
-    private readonly TauriEventManager _eventManager;
-
     private readonly bool _once;
     private bool _onceTriggered;
 
     [JSInvokable]
     public async Task InvokeEvent(T payload)
     {
-        // TODO: 改为异步回调
         await _callback.Invoke(payload);
         if (_once)
         {
@@ -159,7 +123,6 @@ public class TauriEventHandler<T> : ITauriEventHandler
             }
 
             await HandlerRef.InvokeVoidAsync("unlisten");
-            _eventManager.RemoveEventHandler(this);
             await HandlerRef.DisposeAsync();
         }
     }
@@ -201,7 +164,6 @@ public class TauriEventHandler<T> : ITauriEventHandler
             if (!_onceTriggered)
             {
                 await HandlerRef.InvokeVoidAsync("unlisten");
-                _eventManager.RemoveEventHandler(this);
                 await HandlerRef.DisposeAsync();
             }
         };

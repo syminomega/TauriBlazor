@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "tauri-blazor-demo",
+        "title": "Tauri Blazor Demo",
         "width": 800,
         "height": 600
       }

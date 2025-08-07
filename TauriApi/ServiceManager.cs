@@ -16,7 +16,6 @@ public static class ServiceManager
     public static void AddTauriApi(this IServiceCollection services)
     {
         services.AddSingleton<TauriJsInterop>();
-        services.AddSingleton<TauriEventManager>();
         services.AddSingleton<Tauri>();
         
         services.AddSingleton<TauriApp>();

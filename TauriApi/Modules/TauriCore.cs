@@ -88,6 +88,15 @@ public class TauriCore
     /// </summary>
     public ValueTask<bool> IsTauri()
     {
-        return _jsRuntime.InvokeAsync<bool>($"{Prefix}.isTauri");
+        try
+        {
+            return _jsRuntime.InvokeAsync<bool>($"{Prefix}.isTauri");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error checking if running in Tauri: {e.Message}");
+            return new ValueTask<bool>(false);
+        }
+        
     }
 }

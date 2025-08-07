@@ -19,6 +19,10 @@
         <button type="submit">Greet</button>
     </form>
     <p>@GreetMsg</p>
+    @if (_isTauri)
+    {
+        <div style="color: #535bf2; cursor: pointer;" @onclick="OpenDemoWindow">see more examples</div>
+    }
 </main>
 
 @code
@@ -27,9 +31,36 @@
 
     private string? GreetMsg { get; set; }
 
+    private bool _isTauri;
+
     private async Task GreetAsync()
     {
-        GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
+        if (!_isTauri)
+        {
+            GreetMsg = "Tauri is not available. Please run this app in a Tauri environment.";
+        }
+        else
+        {
+            GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
+        }
     }
+    
+    private async Task OpenDemoWindow()
+    {
+        var window = await Tauri.Window.CreateWindow("examples", null);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isTauri = await Tauri.Core.IsTauri();
+            Console.WriteLine($"Is Tauri: {_isTauri}");
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+
+    }
+
 
 }
