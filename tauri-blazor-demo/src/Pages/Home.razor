@@ -44,10 +44,15 @@
             GreetMsg = await Tauri.Core.Invoke<string>("greet", new { name = GreetInput });
         }
     }
-    
+
     private async Task OpenDemoWindow()
     {
-        var window = await Tauri.Window.CreateWindow("examples", null);
+        var window = await Tauri.WebviewWindow.CreateWebviewWindow("examples", null,
+            new WebviewOptions
+            {
+                Url = "/Demo",
+            });
+        await window.Center();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -58,8 +63,8 @@
             Console.WriteLine($"Is Tauri: {_isTauri}");
             StateHasChanged();
         }
-        await base.OnAfterRenderAsync(firstRender);
 
+        await base.OnAfterRenderAsync(firstRender);
     }
 
 

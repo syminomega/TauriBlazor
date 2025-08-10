@@ -1,14 +1,11 @@
+using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using TauriApi.Interfaces;
 using TauriApi.Utilities;
 
 namespace TauriApi;
 
-/// <summary>
-/// Create new window or get a handle to an existing one.
-/// Windows are identified by a label a unique identifier that can be used to reference it later.
-/// It may only contain alphanumeric characters a-zA-Z plus the following special characters -, /, : and _.
-/// </summary>
+/// <inheritdoc />
 public class Window : ITauriWindow
 {
     internal Window(IJSObjectReference windowRef, TauriJsInterop tauriJsInterop)
@@ -22,9 +19,7 @@ public class Window : ITauriWindow
     /// <inheritdoc />
     public IJSObjectReference JsObjectRef { get; }
 
-    /// <summary>
-    /// The window label. It is a unique identifier for the window, can be used to reference it later.
-    /// </summary>
+    /// <inheritdoc />
     public ValueTask<string> Label => _tauriJsInterop.GetJsProperty<string>(JsObjectRef, "label");
 }
 
@@ -110,27 +105,35 @@ public class Monitor
 {
 }
 
-#pragma warning disable CS1591
+
+/// <summary>
+/// Options for creating a window.
+/// </summary>
 public record WindowOptions
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? AlwaysOnBottom { get; init; }
-
-
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? AlwaysOnTop { get; init; }
-
     // backgroundColor
     // backgroundThrottling
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Center { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Closable { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? ContentProtected { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Decorations { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Focus { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Fullscreen { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Height { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? HiddenTitle { get; init; }
 }
-
-#pragma warning restore CS1591
 
 #endregion
 

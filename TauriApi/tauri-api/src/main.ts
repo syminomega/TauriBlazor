@@ -1,4 +1,6 @@
 import {Window, WindowOptions} from "@tauri-apps/api/window";
+import {WebviewOptions} from "@tauri-apps/api/webview";
+import {WebviewWindow} from "@tauri-apps/api/webviewWindow";
 import {listen, once, UnlistenFn, Options} from "@tauri-apps/api/event";
 import {DotNet} from "@microsoft/dotnet-js-interop";
 
@@ -24,6 +26,26 @@ export function constructWindow(label: string, options?: WindowOptions | null) {
     let window = new Window(label, options);
     console.log("Constructing window with label: " + label);
     return window;
+}
+
+export function constructWebviewWindow(label: string, windowOptions?: WindowOptions | null, webviewOptions?: WebviewOptions | null) {
+    // 合并 windowOptions 和 webviewOptions，排除 webviewOptions 中的位置和尺寸属性
+    let mergedOptions: Omit<WebviewOptions, 'x' | 'y' | 'width' | 'height'> & WindowOptions = {};
+    
+    // 首先添加 windowOptions
+    if (windowOptions) {
+        mergedOptions = { ...mergedOptions, ...windowOptions };
+    }
+    
+    // 然后添加 webviewOptions，但排除 x、y、width、height 属性
+    if (webviewOptions) {
+        const { x, y, width, height, ...filteredWebviewOptions } = webviewOptions;
+        mergedOptions = { ...mergedOptions, ...filteredWebviewOptions };
+    }
+    
+    let webviewWindow = new WebviewWindow(label, mergedOptions);
+    console.log("Constructing webview window with label: " + label);
+    return webviewWindow;
 }
 
 class UnlistenHandler {

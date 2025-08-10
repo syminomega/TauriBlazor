@@ -54,6 +54,16 @@ public class TauriJsInterop : IAsyncDisposable
 
     #endregion
 
+    #region WebviewWindow
+
+    public async Task<IJSObjectReference> ConstructWebviewWindow(string label, WindowOptions? windowOptions, WebviewOptions? webviewOptions)
+    {
+        var module = await _moduleTask.Value;
+        var webviewWindow = await module.InvokeAsync<IJSObjectReference>("constructWebviewWindow", label, windowOptions, webviewOptions);
+        return webviewWindow;
+    }
+
+    #endregion
     public async ValueTask DisposeAsync()
     {
         if (_moduleTask.IsValueCreated)

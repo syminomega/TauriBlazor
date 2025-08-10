@@ -1,18 +1,25 @@
 using Microsoft.JSInterop;
 using TauriApi.Interfaces;
+using TauriApi.Utilities;
 
 namespace TauriApi;
 
-/// <summary>
-/// The WebviewWindow instance to communicate with the window and webview.
-/// </summary>
-public class WebviewWindow : ITauriWindow, ITauriWebview
+/// <inheritdoc />
+public class WebviewWindow : ITauriWebviewWindow
 {
-    internal WebviewWindow(IJSObjectReference webviewWindowRef)
+    internal WebviewWindow(IJSObjectReference webviewWindowRef, TauriJsInterop tauriJsInterop)
     {
+        _tauriJsInterop = tauriJsInterop;
         JsObjectRef = webviewWindowRef;
     }
+    
+    private readonly TauriJsInterop _tauriJsInterop;
 
     /// <inheritdoc />
     public IJSObjectReference JsObjectRef { get; }
+    
+    /// <summary>
+    /// The webview label. It is a unique identifier for the webview, can be used to reference it later.
+    /// </summary>
+    public ValueTask<string> Label => _tauriJsInterop.GetJsProperty<string>(JsObjectRef, "label");
 }
