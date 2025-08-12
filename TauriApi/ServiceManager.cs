@@ -18,14 +18,14 @@ public static class ServiceManager
         services.AddSingleton<TauriJsInterop>();
         services.AddSingleton<Tauri>();
         
-        services.AddSingleton<TauriApp>();
-        services.AddSingleton<TauriCore>();
-        services.AddSingleton<TauriEvent>();
-        services.AddSingleton<TauriImage>();
-        services.AddSingleton<TauriPath>();
-        services.AddSingleton<TauriWindow>();
-        services.AddSingleton<TauriWebview>();
-        services.AddSingleton<TauriWebviewWindow>();
+        services.AddSingleton<TauriAppModule>();
+        services.AddSingleton<TauriCoreModule>();
+        services.AddSingleton<TauriEventModule>();
+        services.AddSingleton<TauriImageModule>();
+        services.AddSingleton<TauriPathModule>();
+        services.AddSingleton<TauriWindowModule>();
+        services.AddSingleton<TauriWebviewModule>();
+        services.AddSingleton<TauriWebviewWindowModule>();
     }
 
     /// <summary>

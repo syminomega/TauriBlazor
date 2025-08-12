@@ -6,7 +6,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// The event system allows you to emit events to the backend and listen to events from it.
 /// </summary>
-public class TauriEvent
+public class TauriEventModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.event";
@@ -15,7 +15,7 @@ public class TauriEvent
     /// <summary>
     /// Inject TauriEvent.
     /// </summary>
-    public TauriEvent(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriEventModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;

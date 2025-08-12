@@ -5,7 +5,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// Invoke your custom commands.
 /// </summary>
-public class TauriCore
+public class TauriCoreModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.core";
@@ -13,7 +13,7 @@ public class TauriCore
     /// <summary>
     /// Inject TauriCore.
     /// </summary>
-    public TauriCore(IJSRuntime jsRuntime)
+    public TauriCoreModule(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
     }

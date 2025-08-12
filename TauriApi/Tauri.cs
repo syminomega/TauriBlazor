@@ -11,14 +11,14 @@ public class Tauri
     /// Inject Tauri api modules.
     /// </summary>
     public Tauri(
-        TauriApp tauriApp,
-        TauriCore tauriCore,
-        TauriEvent tauriEvent,
-        TauriImage tauriImage,
-        TauriPath tauriPath,
-        TauriWindow tauriWindow,
-        TauriWebview tauriWebview,
-        TauriWebviewWindow tauriWebviewWindow)
+        TauriAppModule tauriApp,
+        TauriCoreModule tauriCore,
+        TauriEventModule tauriEvent,
+        TauriImageModule tauriImage,
+        TauriPathModule tauriPath,
+        TauriWindowModule tauriWindow,
+        TauriWebviewModule tauriWebview,
+        TauriWebviewWindowModule tauriWebviewWindow)
     {
         App = tauriApp;
         Core = tauriCore;
@@ -33,40 +33,40 @@ public class Tauri
     /// <summary>
     /// @tauri-apps/api/app
     /// </summary>
-    public TauriApp App { get; }
+    public TauriAppModule App { get; }
 
     /// <summary>
     /// @tauri-apps/api/core
     /// </summary>
-    public TauriCore Core { get; }
+    public TauriCoreModule Core { get; }
 
     /// <summary>
     /// @tauri-apps/api/event
     /// </summary>
-    public TauriEvent Event { get; }
+    public TauriEventModule Event { get; }
     
     /// <summary>
     /// @tauri-apps/api/image
     /// </summary>
-    public TauriImage Image { get; }
+    public TauriImageModule Image { get; }
     
     /// <summary>
     /// @tauri-apps/api/path
     /// </summary>
-    public TauriPath Path { get; }
+    public TauriPathModule Path { get; }
 
     /// <summary>
     /// @tauri-apps/api/window
     /// </summary>
-    public TauriWindow Window { get; }
+    public TauriWindowModule Window { get; }
 
     /// <summary>
     /// @tauri-apps/api/webview
     /// </summary>
-    public TauriWebview Webview { get; set; }
+    public TauriWebviewModule Webview { get; set; }
 
     /// <summary>
     /// @tauri-apps/api/webviewWindow
     /// </summary>
-    public TauriWebviewWindow WebviewWindow { get; set; }
+    public TauriWebviewWindowModule WebviewWindow { get; set; }
 }

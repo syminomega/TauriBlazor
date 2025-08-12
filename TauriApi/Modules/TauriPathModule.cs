@@ -6,7 +6,7 @@ namespace TauriApi.Modules;
 /// The path module provides utilities for working with file and directory paths.
 /// It is recommended to allowlist only the APIs you use for optimal bundle size and security.
 /// </summary>
-public class TauriPath
+public class TauriPathModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.path";
@@ -14,7 +14,7 @@ public class TauriPath
     /// <summary>
     /// Inject TauriPath.
     /// </summary>
-    public TauriPath(IJSRuntime jsRuntime)
+    public TauriPathModule(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
     }

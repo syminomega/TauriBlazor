@@ -6,7 +6,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// TauriApp base class
 /// </summary>
-public class TauriApp
+public class TauriAppModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.app";
@@ -15,7 +15,7 @@ public class TauriApp
     /// <summary>
     /// Inject TauriApp
     /// </summary>
-    public TauriApp(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriAppModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;

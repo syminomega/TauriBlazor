@@ -6,7 +6,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// An RGBA Image in row-major order from top to bottom.
 /// </summary>
-public class TauriImage
+public class TauriImageModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.image";
@@ -15,7 +15,7 @@ public class TauriImage
     /// <summary>
     /// Inject TauriImage
     /// </summary>
-    public TauriImage(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriImageModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;

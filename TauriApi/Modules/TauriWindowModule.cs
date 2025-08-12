@@ -7,7 +7,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// Provides APIs to create windows, communicate with other windows and manipulate the current window.
 /// </summary>
-public class TauriWindow
+public class TauriWindowModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.window";
@@ -16,7 +16,7 @@ public class TauriWindow
     /// <summary>
     /// Inject TauriWindow.
     /// </summary>
-    public TauriWindow(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriWindowModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;

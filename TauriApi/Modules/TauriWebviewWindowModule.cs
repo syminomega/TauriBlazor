@@ -7,7 +7,7 @@ namespace TauriApi.Modules;
 /// <summary>
 /// Provides APIs to communicate with the window and webview.
 /// </summary>
-public class TauriWebviewWindow
+public class TauriWebviewWindowModule
 {
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.webviewWindow";
@@ -16,7 +16,7 @@ public class TauriWebviewWindow
     /// <summary>
     /// Inject TauriWebviewWindow.
     /// </summary>
-    public TauriWebviewWindow(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriWebviewWindowModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;
