@@ -59,6 +59,8 @@ builder.Services.AddTauriPlugin<TauriOpener>();
 - api/event
 - api/image
 - api/path
+- api/webview (partial)
+- api/webviewWindow (partial)
 - api/window (partial)
 - plugin/fs (wip)
 - plugin/opener
