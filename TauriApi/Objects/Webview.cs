@@ -229,7 +229,7 @@ public record WebviewOptions
     /// <para>Since version 2.1.0</para>
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Color? BackgroundColor { get; init; }
+    public TauriColor? BackgroundColor { get; init; }
 
     /// <summary>
     /// Change the default background throttling behaviour.
@@ -280,7 +280,7 @@ public record WebviewOptions
 /// It can be either a string <c>#ffffff</c>, an array of 3 or 4 elements or an object.
 /// </summary>
 [JsonConverter(typeof(ColorFormatConverter))]
-public class Color
+public class TauriColor
 {
     /// <summary>
     /// Red, must be between 0 and 255.
@@ -303,13 +303,13 @@ public class Color
     public byte A { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Color"/> class with the specified RGB values and optional alpha value.
+    /// Initializes a new instance of the <see cref="TauriColor"/> class with the specified RGB values and optional alpha value.
     /// </summary>
     /// <param name="r">Red component, must be between 0 and 255.</param>
     /// <param name="g">Green component, must be between 0 and 255.</param>
     /// <param name="b">Blue component, must be between 0 and 255.</param>
     /// <param name="a">Optional alpha component, must be between 0 and 255. If not provided, defaults to 255.</param>
-    public Color(byte r, byte g, byte b, byte? a = null)
+    public TauriColor(byte r, byte g, byte b, byte? a = null)
     {
         R = r;
         G = g;
@@ -318,11 +318,11 @@ public class Color
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Color"/> class from a hexadecimal color string in the format #RRGGBB or #RRGGBBAA.
+    /// Initializes a new instance of the <see cref="TauriColor"/> class from a hexadecimal color string in the format #RRGGBB or #RRGGBBAA.
     /// </summary>
     /// <param name="hex"></param>
     /// <exception cref="ArgumentException"></exception>
-    public Color(string hex)
+    public TauriColor(string hex)
     {
         if (string.IsNullOrEmpty(hex) || hex.Length != 7 && hex.Length != 9)
         {

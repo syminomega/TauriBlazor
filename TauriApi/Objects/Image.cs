@@ -5,9 +5,9 @@ namespace TauriApi;
 /// <summary>
 /// An RGBA Image in row-major order from top to bottom.
 /// </summary>
-public class Image : Resource
+public class TauriImage : Resource
 {
-    internal Image(IJSObjectReference jsObjectRef, long rid) : base(jsObjectRef, rid)
+    internal TauriImage(IJSObjectReference jsObjectRef, long rid) : base(jsObjectRef, rid)
     {
     }
 

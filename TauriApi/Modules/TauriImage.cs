@@ -25,11 +25,11 @@ public class TauriImage
     /// Creates a new Image using RGBA data, in row-major order from top to bottom,
     /// and with specified width and height.
     /// </summary>
-    public async Task<Image> New(byte[] rgba, int width, int height)
+    public async Task<TauriApi.TauriImage> New(byte[] rgba, int width, int height)
     {
         var imageRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.Image.new", rgba, width, height);
         var rid = await _tauriJsInterop.GetJsProperty<long>(imageRef, "rid");
-        return new Image(imageRef, rid);
+        return new TauriApi.TauriImage(imageRef, rid);
     }
 
     /// <summary>
@@ -38,11 +38,11 @@ public class TauriImage
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public async Task<Image> FromPath(string path)
+    public async Task<TauriApi.TauriImage> FromPath(string path)
     {
         var imageRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.Image.fromPath", path);
         var rid = await _tauriJsInterop.GetJsProperty<long>(imageRef, "rid");
-        return new Image(imageRef, rid);
+        return new TauriApi.TauriImage(imageRef, rid);
     }
 
     /// <summary>
@@ -52,10 +52,10 @@ public class TauriImage
     /// </summary>
     /// <param name="bytes"></param>
     /// <returns></returns>
-    public async Task<Image> FromBytes(byte[] bytes)
+    public async Task<TauriApi.TauriImage> FromBytes(byte[] bytes)
     {
         var imageRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.Image.fromBytes", bytes);
         var rid = await _tauriJsInterop.GetJsProperty<long>(imageRef, "rid");
-        return new Image(imageRef, rid);
+        return new TauriApi.TauriImage(imageRef, rid);
     }
 }

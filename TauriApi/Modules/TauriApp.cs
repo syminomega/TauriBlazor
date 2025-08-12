@@ -25,7 +25,7 @@ public class TauriApp
     /// Get the default window icon.
     /// </summary>
     /// <returns></returns>
-    public async Task<Image?> DefaultWindowIcon()
+    public async Task<TauriApi.TauriImage?> DefaultWindowIcon()
     {
         var imageRef = await _jsRuntime.InvokeAsync<IJSObjectReference?>($"{Prefix}.defaultWindowIcon");
         if (imageRef == null)
@@ -34,7 +34,7 @@ public class TauriApp
         }
 
         var rid = await _tauriJsInterop.GetJsProperty<long>(imageRef, "rid");
-        return new Image(imageRef, rid);
+        return new TauriApi.TauriImage(imageRef, rid);
     }
 
     /// <summary>

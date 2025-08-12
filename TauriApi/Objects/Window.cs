@@ -369,7 +369,7 @@ public record WindowOptions
     /// Set the window background color. Platform-specific: Android / iOS unsupported. Windows: alpha channel is ignored.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Color? BackgroundColor { get; init; }
+    public TauriColor? BackgroundColor { get; init; }
 
     /// <summary>
     /// Change the default background throttling behaviour. Platform-specific: Linux / Windows / Android unsupported. iOS/macOS supported since v17/v14.
@@ -424,7 +424,7 @@ public class WindowEffects
     /// on Windows 10 v1903+. Doesn't have any effect on Windows 7 or Windows 11.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Color? Color { get; set; }
+    public TauriColor? Color { get; set; }
 }
 
 #endregion

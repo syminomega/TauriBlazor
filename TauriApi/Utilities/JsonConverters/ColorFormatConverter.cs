@@ -6,7 +6,7 @@ namespace TauriApi.Utilities.JsonConverters;
 /// <summary>
 /// Custom JSON converter for Color class that converts to/from hexadecimal color strings.
 /// </summary>
-public class ColorFormatConverter : JsonConverter<Color>
+public class ColorFormatConverter : JsonConverter<TauriColor>
 {
     /// <summary>
     /// Reads and converts the JSON to a Color object.
@@ -15,7 +15,7 @@ public class ColorFormatConverter : JsonConverter<Color>
     /// <param name="typeToConvert">The type to convert.</param>
     /// <param name="options">An object that specifies serialization options to use.</param>
     /// <returns>The converted value.</returns>
-    public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override TauriColor Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var value = reader.GetString();
 
@@ -32,7 +32,7 @@ public class ColorFormatConverter : JsonConverter<Color>
 
         try
         {
-            return new Color(value);
+            return new TauriColor(value);
         }
         catch (ArgumentException ex)
         {
@@ -46,7 +46,7 @@ public class ColorFormatConverter : JsonConverter<Color>
     /// <param name="writer">The writer to write to.</param>
     /// <param name="value">The value to convert to JSON.</param>
     /// <param name="options">An object that specifies serialization options to use.</param>
-    public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, TauriColor value, JsonSerializerOptions options)
     {
         // Convert to hex string
         var hexColor = value.A == 255
