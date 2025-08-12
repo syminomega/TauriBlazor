@@ -301,7 +301,7 @@ public record WindowOptions
     /// The initial window theme. Defaults to the system theme. Only implemented on Windows and macOS 10.14+.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Theme Theme { get; init; }
+    public Theme? Theme { get; init; }
 
     /// <summary>
     /// The style of the macOS title bar.
