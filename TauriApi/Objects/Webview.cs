@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using TauriApi.Interfaces;
 using TauriApi.Utilities;
+using TauriApi.Utilities.JsonConverters;
 
 namespace TauriApi;
 
@@ -64,7 +65,7 @@ public static class WebviewExtensions
     {
         await webview.JsObjectRef.InvokeVoidAsync("emitTo", target, eventName, payload);
     }
-    
+
     /// <summary>
     /// Set webview zoom level.
     /// </summary>
@@ -216,18 +217,130 @@ public record WebviewOptions
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Devtools { get; init; }
 
-    // /// <summary>
-    // /// Set the window and webview background color.
-    // /// </summary>
-    // /// <remarks>
-    // /// <para><strong>Platform-specific:</strong></para>
-    // /// <para><strong>macOS / iOS:</strong> Not implemented.</para>
-    // /// <para><strong>Windows:</strong></para>
-    // /// <para>- On Windows 7, alpha channel is ignored.</para>
-    // /// <para>- On Windows 8 and newer, if alpha channel is not <c>0</c>, it will be ignored.</para>
-    // /// <para>Since version 2.1.0</para>
-    // /// </remarks>
-    // public Color? BackgroundColor { get; init; }
+    /// <summary>
+    /// Set the window and webview background color.
+    /// </summary>
+    /// <remarks>
+    /// <para><b>Platform-specific:</b></para>
+    /// <para><b>macOS / iOS:</b> Not implemented.</para>
+    /// <para><b>Windows:</b></para>
+    /// <para>- On Windows 7, alpha channel is ignored.</para>
+    /// <para>- On Windows 8 and newer, if alpha channel is not 0, it will be ignored.</para>
+    /// <para>Since version 2.1.0</para>
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Color? BackgroundColor { get; init; }
+
+    /// <summary>
+    /// Change the default background throttling behaviour.
+    /// </summary>
+    /// <remarks>
+    /// By default，browsers use a suspend policy that will throttle timers and even unload
+    /// the whole tab (view) to free resources after roughly 5 minutes when a view became
+    /// minimized or hidden. This will pause all tasks until the documents visibility state
+    /// changes back from hidden to visible by bringing the view back to the foreground.
+    /// <para><b>Platform-specific:</b></para>
+    /// <para><b>Linux / Windows / Android:</b> Unsupported. Workarounds like a pending WebLock transaction might suffice.</para>
+    /// <para><b>iOS:</b> Supported since version 17.0+.</para>
+    /// <para><b>macOS:</b> Supported since version 14.0+.</para>
+    /// see https://github.com/tauri-apps/tauri/issues/5250#issuecomment-2569380578
+    /// Since version 2.3.0
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public BackgroundThrottlingPolicy? BackgroundThrottling { get; init; }
+
+    /// <summary>
+    /// Whether we should disable JavaScript code execution on the webview or not.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? JavascriptDisabled { get; init; }
+
+    /// <summary>
+    /// On macOS and iOS there is a link preview on long pressing links, this is enabled by default.
+    /// see https://docs.rs/objc2-web-kit/latest/objc2_web_kit/struct.WKWebView.html#method.allowsLinkPreview
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? AllowLinkPreview { get; init; }
+
+    /// <summary>
+    /// Allows disabling the input accessory view on iOS.
+    /// The accessory view is the view that appears above the keyboard when a text input element is focused.
+    /// It usually displays a view with "Done", "Next" buttons.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? DisableInputAccessoryView { get; init; }
+}
+
+#endregion
+
+#region Type Aliases
+
+/// <summary>
+/// An RGBA color. Each value has minimum of 0 and maximum of 255.
+/// It can be either a string <c>#ffffff</c>, an array of 3 or 4 elements or an object.
+/// </summary>
+[JsonConverter(typeof(ColorFormatConverter))]
+public class Color
+{
+    /// <summary>
+    /// Red, must be between 0 and 255.
+    /// </summary>
+    public byte R { get; set; }
+
+    /// <summary>
+    /// Green, must be between 0 and 255.
+    /// </summary>
+    public byte G { get; set; }
+
+    /// <summary>
+    /// Blue, must be between 0 and 255.
+    /// </summary>
+    public byte B { get; set; }
+
+    /// <summary>
+    /// Alpha, must be between 0 and 255.
+    /// </summary>
+    public byte A { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Color"/> class with the specified RGB values and optional alpha value.
+    /// </summary>
+    /// <param name="r">Red component, must be between 0 and 255.</param>
+    /// <param name="g">Green component, must be between 0 and 255.</param>
+    /// <param name="b">Blue component, must be between 0 and 255.</param>
+    /// <param name="a">Optional alpha component, must be between 0 and 255. If not provided, defaults to 255.</param>
+    public Color(byte r, byte g, byte b, byte? a = null)
+    {
+        R = r;
+        G = g;
+        B = b;
+        A = a ?? 255;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Color"/> class from a hexadecimal color string in the format #RRGGBB or #RRGGBBAA.
+    /// </summary>
+    /// <param name="hex"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public Color(string hex)
+    {
+        if (string.IsNullOrEmpty(hex) || hex.Length != 7 && hex.Length != 9)
+        {
+            throw new ArgumentException("Hex color must be in the format #RRGGBB or #RRGGBBAA", nameof(hex));
+        }
+
+        try
+        {
+            R = Convert.ToByte(hex.Substring(1, 2), 16);
+            G = Convert.ToByte(hex.Substring(3, 2), 16);
+            B = Convert.ToByte(hex.Substring(5, 2), 16);
+            A = hex.Length == 9 ? Convert.ToByte(hex.Substring(7, 2), 16) : (byte)255;
+        }
+        catch (Exception e)
+        {
+            throw new ArgumentException("Hex color must be in the format #RRGGBB or #RRGGBBAA", nameof(hex), e);
+        }
+    }
 }
 
 #endregion

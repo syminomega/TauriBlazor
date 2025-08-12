@@ -47,7 +47,13 @@
 
     private async Task OpenDemoWindow()
     {
-        var window = await Tauri.WebviewWindow.CreateWebviewWindow("examples", null,
+        var window = await Tauri.WebviewWindow.CreateWebviewWindow("examples", 
+            new WindowOptions
+            {
+                Width = 400,
+                Height = 300,
+                TitleBarStyle = TitleBarStyle.Transparent,
+            },
             new WebviewOptions
             {
                 Url = "/Demo",
