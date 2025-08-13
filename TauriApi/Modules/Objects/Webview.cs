@@ -1,79 +1,57 @@
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
-using TauriApi.Interfaces;
+using TauriApi.Modules;
 using TauriApi.Utilities;
 using TauriApi.Utilities.JsonConverters;
 
 namespace TauriApi;
 
 /// <inheritdoc />
-public class Webview : ITauriWebview
+internal class TauriWebview : ITauriWebview
 {
-    internal Webview(IJSObjectReference webviewRef, TauriJsInterop tauriJsInterop)
+    private readonly TauriJsInterop _tauriJsInterop;
+    private readonly TauriEventModule _tauriEvent;
+
+    internal TauriWebview(IJSObjectReference webviewRef, TauriJsInterop tauriJsInterop, TauriEventModule tauriEvent)
     {
         _tauriJsInterop = tauriJsInterop;
         JsObjectRef = webviewRef;
+        _tauriEvent = tauriEvent;
     }
 
-    private readonly TauriJsInterop _tauriJsInterop;
 
     /// <inheritdoc />
     public IJSObjectReference JsObjectRef { get; }
 
     /// <inheritdoc />
     public ValueTask<string> Label => _tauriJsInterop.GetJsProperty<string>(JsObjectRef, "label");
-}
 
-/// <summary>
-/// Webview Methods
-/// </summary>
-public static class WebviewExtensions
-{
-    /// <summary>
-    /// Emits an event to all targets.
-    /// </summary>
-    /// <param name="webview"></param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task Emit(this ITauriWebview webview, string eventName, object? payload = null)
+    public async Task<UnlistenFn> Listen<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
-        await webview.JsObjectRef.InvokeVoidAsync("emit", eventName, payload);
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Webview(label));
+        return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Emits an event to all targets matching the given target label.
-    /// </summary>
-    /// <param name="webview"></param>
-    /// <param name="targetLabel">Label of the target Window/Webview/WebviewWindow</param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task EmitTo(this ITauriWebview webview, string targetLabel, string eventName,
-        object? payload = null)
+    public async Task<UnlistenFn> Listen(string eventName, Func<Task> callbackAsync)
     {
-        await webview.JsObjectRef.InvokeVoidAsync("emitTo", targetLabel, eventName, payload);
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Webview(label));
+        return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Emits an event to all targets matching the given <see cref="EventTarget"/>.
-    /// </summary>
-    /// <param name="webview"></param>
-    /// <param name="target">Raw <see cref="EventTarget"/> object.</param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task EmitTo<T>(this ITauriWebview webview, T target, string eventName, object? payload = null)
-        where T : EventTarget
+    public async Task<UnlistenFn> Once<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
-        await webview.JsObjectRef.InvokeVoidAsync("emitTo", target, eventName, payload);
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Webview(label));
+        return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Set webview zoom level.
-    /// </summary>
-    /// <param name="webview"></param>
-    /// <param name="scaleFactor"></param>
-    public static async Task SetZoom(this ITauriWebview webview, double scaleFactor)
+    public async Task<UnlistenFn> Once(string eventName, Func<Task> callbackAsync)
     {
-        await webview.JsObjectRef.InvokeVoidAsync("setZoom", scaleFactor);
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Webview(label));
+        return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 }
 

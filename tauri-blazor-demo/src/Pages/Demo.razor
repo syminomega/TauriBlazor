@@ -1,6 +1,30 @@
 @page "/Demo"
+
+@inject Tauri Tauri
 <h3>Demo</h3>
 
 @code {
+    private bool _isTauri;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _isTauri = await Tauri.Core.IsTauri();
+            await InitializeTauriDemo();
+        }
+    }
     
+    private async Task InitializeTauriDemo()
+    {
+        if (!_isTauri)
+        {
+            return;
+        }
+
+        var window = await Tauri.Window.GetCurrentWindow();
+        var label = await window.Label;
+        await window.SetTitle("Demo window: " + label);
+    }
+
 }

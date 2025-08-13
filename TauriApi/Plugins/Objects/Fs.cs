@@ -5,7 +5,7 @@ namespace TauriApi.Plugins;
 /// <summary>
 /// The Tauri abstraction for reading and writing files.
 /// </summary>
-public class FileHandler : Resource
+public class FileHandler : TauriResource
 {
     internal FileHandler(IJSObjectReference jsObjectRef, long rid) : base(jsObjectRef, rid)
     {

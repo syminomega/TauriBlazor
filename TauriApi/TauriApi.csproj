@@ -6,7 +6,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <SkipNpmBuild>false</SkipNpmBuild>
         <PackageId>SyminStudio.TauriApi</PackageId>
-        <PackageVersion>0.5.4</PackageVersion>
+        <PackageVersion>0.6.0</PackageVersion>
         <Title>TauriApi</Title>
         <Authors>Symin</Authors>
         <Description>Exposed Tauri APIs for Blazor.</Description>
@@ -16,7 +16,7 @@
         <PackageTags>Blazor;Tauri;Multi-Platform</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>Fixed windowOption error</PackageReleaseNotes>
+        <PackageReleaseNotes>Add Events for Window and Webview.</PackageReleaseNotes>
         <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
 
@@ -44,6 +44,10 @@
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
         <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Basic\" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(SkipNpmBuild)' == 'false'">

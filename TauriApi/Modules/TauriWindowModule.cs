@@ -1,5 +1,5 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
-using TauriApi.Interfaces;
 using TauriApi.Utilities;
 
 namespace TauriApi.Modules;
@@ -12,14 +12,16 @@ public class TauriWindowModule
     private readonly IJSRuntime _jsRuntime;
     private const string Prefix = "__TAURI__.window";
     private readonly TauriJsInterop _tauriJsInterop;
+    private readonly TauriEventModule _tauriEvent;
 
     /// <summary>
     /// Inject TauriWindow.
     /// </summary>
-    public TauriWindowModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop)
+    public TauriWindowModule(IJSRuntime jsRuntime, TauriJsInterop tauriJsInterop, TauriEventModule tauriEvent)
     {
         _jsRuntime = jsRuntime;
         _tauriJsInterop = tauriJsInterop;
+        _tauriEvent = tauriEvent;
     }
 
     /// <summary>
@@ -31,7 +33,7 @@ public class TauriWindowModule
     public async Task<ITauriWindow> CreateWindow(string label, WindowOptions? options)
     {
         var windowRef = await _tauriJsInterop.ConstructWindow(label, options);
-        var window = new Window(windowRef, _tauriJsInterop);
+        var window = new TauriWindow(windowRef, _tauriJsInterop, _tauriEvent);
         return window;
     }
 
@@ -46,8 +48,9 @@ public class TauriWindowModule
         var windows = new ITauriWindow[windowRefs.Length];
         for (var i = 0; i < windowRefs.Length; i++)
         {
-            windows[i] = new Window(windowRefs[i], _tauriJsInterop);
+            windows[i] = new TauriWindow(windowRefs[i], _tauriJsInterop, _tauriEvent);
         }
+
         return windows;
     }
 
@@ -58,7 +61,7 @@ public class TauriWindowModule
     public async Task<ITauriWindow> GetCurrentWindow()
     {
         var windowRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.getCurrentWindow");
-        var window = new Window(windowRef, _tauriJsInterop);
+        var window = new TauriWindow(windowRef, _tauriJsInterop, _tauriEvent);
         return window;
     }
 }

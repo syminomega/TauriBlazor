@@ -1,102 +1,56 @@
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
-using TauriApi.Interfaces;
+using TauriApi.Modules;
 using TauriApi.Utilities;
 using TauriApi.Utilities.JsonConverters;
 
 namespace TauriApi;
 
 /// <inheritdoc />
-public class Window : ITauriWindow
+internal class TauriWindow : ITauriWindow
 {
-    internal Window(IJSObjectReference windowRef, TauriJsInterop tauriJsInterop)
+    private readonly TauriJsInterop _tauriJsInterop;
+    private readonly TauriEventModule _tauriEvent;
+
+    internal TauriWindow(IJSObjectReference windowRef, TauriJsInterop tauriJsInterop, TauriEventModule tauriEvent)
     {
         _tauriJsInterop = tauriJsInterop;
         JsObjectRef = windowRef;
+        _tauriEvent = tauriEvent;
     }
-
-    private readonly TauriJsInterop _tauriJsInterop;
 
     /// <inheritdoc />
     public IJSObjectReference JsObjectRef { get; }
 
     /// <inheritdoc />
     public ValueTask<string> Label => _tauriJsInterop.GetJsProperty<string>(JsObjectRef, "label");
-}
 
-/// <summary>
-/// Window Methods
-/// </summary>
-public static class WindowExtensions
-{
-    /// <summary>
-    /// Centers the window.
-    /// </summary>
-    public static async Task Center(this ITauriWindow window)
+    public async Task<UnlistenFn> Listen<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
-        await window.JsObjectRef.InvokeVoidAsync("center");
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Window(label));
+        return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Clear any applied effects if possible.
-    /// </summary>
-    public static async Task ClearEffects(this ITauriWindow window)
+    public async Task<UnlistenFn> Listen(string eventName, Func<Task> callbackAsync)
     {
-        await window.JsObjectRef.InvokeVoidAsync("clearEffects");
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Window(label));
+        return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Closes the window.
-    /// Note this emits a closeRequested event so you can intercept it. To force window close, use <see cref="Destroy"/>.
-    /// </summary>
-    public static async Task Close(this ITauriWindow window)
+    public async Task<UnlistenFn> Once<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
-        await window.JsObjectRef.InvokeVoidAsync("close");
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Window(label));
+        return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 
-    /// <summary>
-    /// Destroys the window. Behaves like <see cref="Close"/> but forces the window close instead of emitting a closeRequested event.
-    /// </summary>
-    public static async Task Destroy(this ITauriWindow window)
+    public async Task<UnlistenFn> Once(string eventName, Func<Task> callbackAsync)
     {
-        await window.JsObjectRef.InvokeVoidAsync("destroy");
-    }
-
-    /// <summary>
-    /// Emits an event to all targets.
-    /// </summary>
-    /// <param name="window"></param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task Emit(this ITauriWindow window, string eventName, object? payload = null)
-    {
-        await window.JsObjectRef.InvokeVoidAsync("emit", eventName, payload);
-    }
-
-    /// <summary>
-    /// Emits an event to all targets matching the given target label.
-    /// </summary>
-    /// <param name="window"></param>
-    /// <param name="targetLabel">Label of the target Window/Webview/WebviewWindow</param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task EmitTo(this ITauriWindow window, string targetLabel, string eventName,
-        object? payload = null)
-    {
-        await window.JsObjectRef.InvokeVoidAsync("emitTo", targetLabel, eventName, payload);
-    }
-
-    /// <summary>
-    /// Emits an event to all targets matching the given <see cref="EventTarget"/>.
-    /// </summary>
-    /// <param name="window"></param>
-    /// <param name="target">Raw <see cref="EventTarget"/> object.</param>
-    /// <param name="eventName">Event name. Must include only alphanumeric characters, -, /, : and _.</param>
-    /// <param name="payload">Event payload. Can be serialized to JSON.</param>
-    public static async Task EmitTo<T>(this ITauriWindow window, T target, string eventName, object? payload = null)
-        where T : EventTarget
-    {
-        await window.JsObjectRef.InvokeVoidAsync("emitTo", target, eventName, payload);
+        var label = await Label;
+        var eventOption = new EventOptions(new EventTarget.Window(label));
+        return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 }
 
@@ -451,117 +405,120 @@ public enum Effect
     /// A default material appropriate for the view's effectiveAppearance. macOS 10.14-
     /// </summary>
     [Obsolete("Deprecated since macOS 10.14. You should instead choose an appropriate semantic material.")]
-    [CustomEnumValue("appearanceBased")] AppearanceBased,
-    
-    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")]
-    [CustomEnumValue("light")] Light,
-    
-    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")]
-    [CustomEnumValue("dark")] Dark,
-    
-    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")]
-    [CustomEnumValue("mediumLight")] MediumLight,
-    
-    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")]
-    [CustomEnumValue("ultraDark")] UltraDark,
-    
+    [CustomEnumValue("appearanceBased")]
+    AppearanceBased,
+
+    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")] [CustomEnumValue("light")]
+    Light,
+
+    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")] [CustomEnumValue("dark")]
+    Dark,
+
+    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")] [CustomEnumValue("mediumLight")]
+    MediumLight,
+
+    [Obsolete("Deprecated since macOS 10.14. Use a semantic material instead.")] [CustomEnumValue("ultraDark")]
+    UltraDark,
+
     /// <summary>
     /// macOS 10.10+
     /// </summary>
     [CustomEnumValue("titlebar")] Titlebar,
-    
+
     /// <summary>
     /// macOS 10.10+
     /// </summary>
     [CustomEnumValue("selection")] Selection,
-    
+
     /// <summary>
     /// macOS 10.11+
     /// </summary>
     [CustomEnumValue("menu")] Menu,
-    
+
     /// <summary>
     /// macOS 10.11+
     /// </summary>
     [CustomEnumValue("popover")] Popover,
-    
+
     /// <summary>
     /// macOS 10.11+
     /// </summary>
     [CustomEnumValue("sidebar")] Sidebar,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("headerView")] HeaderView,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("sheet")] Sheet,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("windowBackground")] WindowBackground,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("hudWindow")] HudWindow,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("fullScreenUI")] FullScreenUi,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("tooltip")] Tooltip,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
     [CustomEnumValue("contentBackground")] ContentBackground,
-    
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
-    [CustomEnumValue("underWindowBackground")] UnderWindowBackground,
-    
+    [CustomEnumValue("underWindowBackground")]
+    UnderWindowBackground,
+
     /// <summary>
     /// macOS 10.14+
     /// </summary>
-    [CustomEnumValue("underPageBackground")] UnderPageBackground,
-    
+    [CustomEnumValue("underPageBackground")]
+    UnderPageBackground,
+
     /// <summary>
     /// Windows 11 Only
     /// </summary>
     [CustomEnumValue("mica")] Mica,
-    
+
     /// <summary>
     /// Windows 7/10/11(22H1) Only
     /// </summary>
     /// <remarks>This effect has bad performance when resizing/dragging the window on Windows 11 build 22621.</remarks>
     [CustomEnumValue("blur")] Blur,
-    
+
     /// <summary>
     /// Windows 10/11
     /// </summary>
     /// <remarks>This effect has bad performance when resizing/dragging the window on Windows 10 v1903+ and Windows 11 build 22000.</remarks>
     [CustomEnumValue("acrylic")] Acrylic,
-    
+
     /// <summary>
     /// Tabbed effect that matches the system dark preference Windows 11 Only
     /// </summary>
     [CustomEnumValue("tabbed")] Tabbed,
-    
+
     /// <summary>
     /// Tabbed effect with dark mode but only if dark mode is enabled on the system Windows 11 Only
     /// </summary>
     [CustomEnumValue("tabbedDark")] TabbedDark,
-    
+
     /// <summary>
     /// Tabbed effect with light mode Windows 11 Only
     /// </summary>
@@ -578,18 +535,20 @@ public enum EffectState
     /// <summary>
     /// Make window effect state follow the window's active state macOS only
     /// </summary>
-    [CustomEnumValue("followsWindowActiveState")] FollowsWindowActiveState,
-    
+    [CustomEnumValue("followsWindowActiveState")]
+    FollowsWindowActiveState,
+
     /// <summary>
     /// Make window effect state always active macOS only
     /// </summary>
     [CustomEnumValue("active")] Active,
-    
+
     /// <summary>
     /// Make window effect state always inactive macOS only
     /// </summary>
     [CustomEnumValue("inactive")] Inactive
 }
+
 #endregion
 
 #region Type Aliases
