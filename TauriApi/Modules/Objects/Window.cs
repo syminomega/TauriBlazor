@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using TauriApi.Modules;
@@ -58,6 +57,42 @@ internal class TauriWindow : ITauriWindow
 #region Interfaces
 
 /// <summary>
+/// The window effects configuration object.
+/// </summary>
+/// <since>2.0.0</since>
+public class Effects
+{
+    /// <summary>
+    /// List of Window effects to apply to the Window.
+    /// Conflicting effects will apply the first one and ignore the rest.
+    /// </summary>
+    [JsonPropertyName("effects")]
+    public Effect[] EffectsList { get; init; } = Array.Empty<Effect>();
+
+    /// <summary>
+    /// Window effect state. macOS Only.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("state")]
+    public EffectState? State { get; init; }
+
+    /// <summary>
+    /// Window effect corner radius. macOS Only.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("radius")]
+    public double? Radius { get; init; }
+
+    /// <summary>
+    /// Window effect color. Affects <see cref="Effect.Blur"/> and <see cref="Effect.Acrylic"/> only
+    /// on Windows 10 v1903+. Doesn't have any effect on Windows 7 or Windows 11.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("color")]
+    public TauriColor? Color { get; init; }
+}
+
+/// <summary>
 /// Allows you to retrieve information about a given monitor.
 /// </summary>
 public class Monitor
@@ -102,6 +137,54 @@ public class Monitor
         /// </summary>
         public PhysicalSize Size { get; set; } = new(0, 0);
     }
+}
+
+/// <summary>
+/// Represents the state of a progress bar.
+/// </summary>
+public class ProgressBarState
+{
+    /// <summary>
+    /// The progress bar status.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ProgressBarStatus? Status { get; init; }
+
+    /// <summary>
+    /// The progress bar progress. This can be a value ranging from 0 to 100.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? Progress { get; init; }
+}
+
+/// <summary>
+/// Represents the constraints for a window's size.
+/// </summary>
+public class WindowSizeConstraints
+{
+    /// <summary>
+    /// The minimum width constraint.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MinWidth { get; init; }
+
+    /// <summary>
+    /// The minimum height constraint.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MinHeight { get; init; }
+
+    /// <summary>
+    /// The maximum width constraint.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxWidth { get; init; }
+
+    /// <summary>
+    /// The maximum height constraint.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? MaxHeight { get; init; }
 }
 
 /// <summary>
@@ -575,6 +658,46 @@ public enum EffectState
     [CustomEnumValue("inactive")] Inactive
 }
 
+/// <summary>
+/// Progress bar status enumeration.
+/// </summary>
+[JsonConverter(typeof(CustomEnumValueConverter<ProgressBarStatus>))]
+public enum ProgressBarStatus
+{
+    /// <summary>
+    /// Hide progress bar.
+    /// </summary>
+    [CustomEnumValue("none")] None,
+
+    /// <summary>
+    /// Normal state.
+    /// </summary>
+    [CustomEnumValue("normal")] Normal,
+
+    /// <summary>
+    /// Indeterminate state. Treated as Normal on Linux and macOS.
+    /// </summary>
+    [CustomEnumValue("indeterminate")] Indeterminate,
+
+    /// <summary>
+    /// Paused state. Treated as Normal on Linux.
+    /// </summary>
+    [CustomEnumValue("paused")] Paused,
+
+    /// <summary>
+    /// Error state. Treated as Normal on Linux.
+    /// </summary>
+    [CustomEnumValue("error")] Error,
+}
+
+// TODO: test this converter
+[JsonConverter(typeof(CustomEnumValueConverter<UserAttentionType>))]
+public enum UserAttentionType
+{
+    [CustomEnumValue("critical")] Critical,
+    [CustomEnumValue("informational")] Informational,
+}
+
 #endregion
 
 #region Type Aliases
@@ -592,6 +715,74 @@ public enum TitleBarStyle
     [CustomEnumValue("visible")] Visible,
     [CustomEnumValue("transparent")] Transparent,
     [CustomEnumValue("overlay")] Overlay,
+}
+
+[JsonConverter(typeof(CustomEnumValueConverter<CursorIcon>))]
+public enum CursorIcon
+{
+    [CustomEnumValue("default")] Default,
+    [CustomEnumValue("crosshair")] Crosshair,
+    [CustomEnumValue("hand")] Hand,
+    [CustomEnumValue("arrow")] Arrow,
+    [CustomEnumValue("move")] Move,
+    [CustomEnumValue("text")] Text,
+    [CustomEnumValue("wait")] Wait,
+    [CustomEnumValue("help")] Help,
+    [CustomEnumValue("progress")] Progress,
+    [CustomEnumValue("notAllowed")] NotAllowed,
+    [CustomEnumValue("contextMenu")] ContextMenu,
+    [CustomEnumValue("cell")] Cell,
+    [CustomEnumValue("verticalText")] VerticalText,
+    [CustomEnumValue("alias")] Alias,
+    [CustomEnumValue("copy")] Copy,
+    [CustomEnumValue("noDrop")] NoDrop,
+    [CustomEnumValue("grab")] Grab,
+    [CustomEnumValue("grabbing")] Grabbing,
+    [CustomEnumValue("allScroll")] AllScroll,
+    [CustomEnumValue("zoomIn")] ZoomIn,
+    [CustomEnumValue("zoomOut")] ZoomOut,
+    [CustomEnumValue("eResize")] EResize,
+    [CustomEnumValue("nResize")] NResize,
+    [CustomEnumValue("neResize")] NeResize,
+    [CustomEnumValue("nwResize")] NwResize,
+    [CustomEnumValue("sResize")] SResize,
+    [CustomEnumValue("seResize")] SeResize,
+    [CustomEnumValue("swResize")] SwResize,
+    [CustomEnumValue("wResize")] WResize,
+    [CustomEnumValue("ewResize")] EwResize,
+    [CustomEnumValue("nsResize")] NsResize,
+    [CustomEnumValue("neswResize")] NeswResize,
+    [CustomEnumValue("nwseResize")] NwseResize,
+    [CustomEnumValue("colResize")] ColResize,
+    [CustomEnumValue("rowResize")] RowResize,
+}
+
+public class Size
+{
+    // TODO: Implement Size type mapping from TypeScript (union of LogicalSize | PhysicalSize)
+}
+
+public class Position
+{
+    // TODO: Implement Position type mapping from TypeScript (union of LogicalPosition | PhysicalPosition)
+}
+
+public class Image
+{
+    // TODO: Implement Image type mapping from TypeScript
+}
+
+[JsonConverter(typeof(CustomEnumValueConverter<ResizeDirection>))]
+public enum ResizeDirection
+{
+    [CustomEnumValue("East")] East,
+    [CustomEnumValue("North")] North,
+    [CustomEnumValue("NorthEast")] NorthEast,
+    [CustomEnumValue("NorthWest")] NorthWest,
+    [CustomEnumValue("South")] South,
+    [CustomEnumValue("SouthEast")] SouthEast,
+    [CustomEnumValue("SouthWest")] SouthWest,
+    [CustomEnumValue("West")] West,
 }
 
 #endregion

@@ -1,10 +1,20 @@
 @page "/Demo"
 
 @inject Tauri Tauri
+@inject ILogger<Demo> Logger
 <h3>Demo</h3>
+<button @onclick="GetAllWindows">Get All Windows</button>
+@foreach(var window in _windows)
+{
+    <div>
+        <p>@window</p>
+    </div>
+}
 
 @code {
     private bool _isTauri;
+    private List<string> _windows = [];
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -30,6 +40,18 @@
             Console.WriteLine($"Received event: {data}");
             await window.Emit("my-response", $"Response to: {data}");
         });
+    }
+
+    private async Task GetAllWindows()
+    {
+        var windows = await Tauri.Window.GetAllWindows();
+        _windows.Clear();
+        foreach (var tauriWindow in windows)
+        {
+            var windowLabel = await tauriWindow.Label;
+            _windows.Add(windowLabel);
+        }
+        StateHasChanged();
     }
 
 }

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using TauriApi.Utilities;
 
@@ -38,17 +37,39 @@ public class TauriWindowModule
     }
 
     /// <summary>
+    /// Gets the Window associated with the given label.
+    /// </summary>
+    /// <param name="label">The window label.</param>
+    /// <returns>The Window instance to communicate with the window or null if the window doesn't exist.</returns>
+    public async Task<ITauriWindow?> GetWindowByLabel(string label)
+    {
+        var allWindows = await GetAllWindows();
+        foreach (var window in allWindows)
+        {
+            var windowLabel = await window.Label;
+            if (windowLabel == label)
+            {
+                return window;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Gets a list of instances of Window for all available windows.
     /// </summary>
-    /// <returns></returns>
-    // TODO: Test this method.
-    private async Task<ITauriWindow[]> GetAllWindows()
+    public async Task<ITauriWindow[]> GetAllWindows()
     {
-        var windowRefs = await _jsRuntime.InvokeAsync<IJSObjectReference[]>($"{Prefix}.getAllWindows");
-        var windows = new ITauriWindow[windowRefs.Length];
-        for (var i = 0; i < windowRefs.Length; i++)
+        // 先获取数组长度
+        var allWindows = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.getAllWindows");
+        var windowCount = await _tauriJsInterop.GetJsProperty<int>(allWindows, "length");
+
+        var windows = new ITauriWindow[windowCount];
+        for (var i = 0; i < windowCount; i++)
         {
-            windows[i] = new TauriWindow(windowRefs[i], _tauriJsInterop, _tauriEvent);
+            var windowRef = await _tauriJsInterop.GetJsProperty<IJSObjectReference>(allWindows, $"[{i}]");
+            windows[i] = new TauriWindow(windowRef, _tauriJsInterop, _tauriEvent);
         }
 
         return windows;
@@ -57,11 +78,28 @@ public class TauriWindowModule
     /// <summary>
     /// Get an instance of Window for the current window.
     /// </summary>
-    /// <returns></returns>
     public async Task<ITauriWindow> GetCurrentWindow()
     {
         var windowRef = await _jsRuntime.InvokeAsync<IJSObjectReference>($"{Prefix}.getCurrentWindow");
         var window = new TauriWindow(windowRef, _tauriJsInterop, _tauriEvent);
         return window;
+    }
+
+    /// <summary>
+    /// Gets the focused window.
+    /// </summary>
+    public async Task<ITauriWindow?> GetFocusedWindow()
+    {
+        var allWindows = await GetAllWindows();
+        foreach (var window in allWindows)
+        {
+            var isFocused = await window.IsFocused();
+            if (isFocused)
+            {
+                return window;
+            }
+        }
+
+        return null;
     }
 }

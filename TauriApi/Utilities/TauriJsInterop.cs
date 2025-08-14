@@ -32,7 +32,7 @@ public class TauriJsInterop : IAsyncDisposable
         var eventRef = await module.InvokeAsync<IJSObjectReference>("listenEvent", eventName, eventHandler, options);
         return eventRef;
     }
-    
+
     public async Task<IJSObjectReference> OnceEvent(
         string eventName, DotNetObjectReference<ITauriEventHandler> eventHandler, EventOptions? options)
     {
@@ -54,16 +54,32 @@ public class TauriJsInterop : IAsyncDisposable
 
     #endregion
 
-    #region WebviewWindow
+    #region Webview
 
-    public async Task<IJSObjectReference> ConstructWebviewWindow(string label, WindowOptions? windowOptions, WebviewOptions? webviewOptions)
+    public async Task<IJSObjectReference> ConstructWebview(string windowLabel, string label,
+        WebviewStandaloneOptions options)
     {
         var module = await _moduleTask.Value;
-        var webviewWindow = await module.InvokeAsync<IJSObjectReference>("constructWebviewWindow", label, windowOptions, webviewOptions);
+        var appWebview = await module.InvokeAsync<IJSObjectReference>("constructWebview", windowLabel, label, options);
+        return appWebview;
+    }
+
+    #endregion
+
+    #region WebviewWindow
+
+    public async Task<IJSObjectReference> ConstructWebviewWindow(string label, WindowOptions? windowOptions,
+        WebviewOptions? webviewOptions)
+    {
+        var module = await _moduleTask.Value;
+        var webviewWindow =
+            await module.InvokeAsync<IJSObjectReference>("constructWebviewWindow", label, windowOptions,
+                webviewOptions);
         return webviewWindow;
     }
 
     #endregion
+
     public async ValueTask DisposeAsync()
     {
         if (_moduleTask.IsValueCreated)

@@ -74,30 +74,6 @@ public record WebviewOptions
     public string? Url { get; init; }
 
     /// <summary>
-    /// The initial vertical position.
-    /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? X { get; init; }
-
-    /// <summary>
-    /// The initial horizontal position.
-    /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? Y { get; init; }
-
-    /// <summary>
-    /// The initial width.
-    /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? Width { get; init; }
-
-    /// <summary>
-    /// The initial height.
-    /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? Height { get; init; }
-
-    /// <summary>
     /// Whether the webview is transparent or not.
     /// </summary>
     /// <remarks>
@@ -247,6 +223,41 @@ public record WebviewOptions
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? DisableInputAccessoryView { get; init; }
+}
+
+/// <summary>
+/// Options for creating webview standalone.
+/// </summary>
+public record WebviewStandaloneOptions : WebviewOptions
+{
+    /// <inheritdoc />
+    public WebviewStandaloneOptions(int x, int y, int width, int height)
+    {
+        X = x;
+        Y = y;
+        Width = width;
+        Height = height;
+    }
+
+    /// <summary>
+    /// The initial vertical position.
+    /// </summary>
+    public int X { get; init; }
+
+    /// <summary>
+    /// The initial horizontal position.
+    /// </summary>
+    public int Y { get; init; }
+
+    /// <summary>
+    /// The initial width.
+    /// </summary>
+    public int Width { get; init; }
+
+    /// <summary>
+    /// The initial height.
+    /// </summary>
+    public int Height { get; init; }
 }
 
 #endregion
