@@ -25,6 +25,11 @@
         var window = await Tauri.Window.GetCurrentWindow();
         var label = await window.Label;
         await window.SetTitle("Demo window: " + label);
+        await window.Listen<string>("my-event", async data =>
+        {
+            Console.WriteLine($"Received event: {data}");
+            await window.Emit("my-response", $"Response to: {data}");
+        });
     }
 
 }

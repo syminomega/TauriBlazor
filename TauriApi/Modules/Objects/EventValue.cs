@@ -90,104 +90,78 @@ public class EventOptions
 /// <summary>
 /// Type alias for the event target.
 /// </summary>
-public abstract class EventTarget
+public class EventTarget
 {
     /// <summary>
     /// Event target kind.
     /// </summary>
     public string Kind { get; }
 
-    private EventTarget(string kind)
+    /// <summary>
+    /// Label for the event target, if applicable.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Label { get; }
+
+    private EventTarget(string kind, string? label)
     {
         Kind = kind;
+        Label = label;
+    }
+    
+    /// <summary>
+    /// App event target, which is the main application.
+    /// </summary>
+    public static EventTarget App()
+    {
+        return new EventTarget("App", null);
+    }
+    /// <summary>
+    /// Any event target.
+    /// </summary>
+    public static EventTarget Any()
+    {
+        return new EventTarget("Any", null);
     }
 
-    /// <inheritdoc />
-    public sealed class Any : EventTarget
+    /// <summary>
+    /// Any event target with a specific label.
+    /// </summary>
+    public static EventTarget AnyLabel(string label)
     {
-        /// <inheritdoc />
-        public Any() : base("Any")
-        {
-        }
+        return new EventTarget("AnyLabel", label);
     }
-
-    /// <inheritdoc />
-    public sealed class AnyLabel : EventTarget
+    
+    /// <summary>
+    /// Window with a specific label.
+    /// </summary>
+    public static EventTarget Window(string label)
     {
-        /// <summary>
-        /// Label for the event target.
-        /// </summary>
-        public string Label { get; }
-
-        /// <inheritdoc />
-        public AnyLabel(string label) : base("AnyLabel")
-        {
-            Label = label;
-        }
-
-        /// <summary>
-        /// Implicit conversion from string to AnyLabel.
-        /// </summary>
-        /// <param name="label">target label</param>
-        /// <returns></returns>
-        public static implicit operator AnyLabel(string label)
-        {
-            return new AnyLabel(label);
-        }
+        return new EventTarget("Window", label);
     }
-
-    /// <inheritdoc />
-    public sealed class App : EventTarget
+    
+    /// <summary>
+    /// Webview with a specific label.
+    /// </summary>
+    public static EventTarget Webview(string label)
     {
-        /// <inheritdoc />
-        public App() : base("App")
-        {
-        }
+        return new EventTarget("Webview", label);
     }
-
-    /// <inheritdoc />
-    public sealed class Window : EventTarget
+    
+    /// <summary>
+    /// Webview Window with a specific label.
+    /// </summary>
+    public static EventTarget WebviewWindow(string label)
     {
-        /// <summary>
-        /// Label for the event target.
-        /// </summary>
-        public string Label { get; }
-
-        /// <inheritdoc />
-        public Window(string label) : base("Window")
-        {
-            Label = label;
-        }
+        return new EventTarget("WebviewWindow", label);
     }
-
-    /// <inheritdoc />
-    public sealed class Webview : EventTarget
+    
+    /// <summary>
+    /// Any event target with a specific label.
+    /// </summary>
+    public static implicit operator EventTarget(string label)
     {
-        /// <summary>
-        /// Label for the event target.
-        /// </summary>
-        public string Label { get; }
-
-        /// <inheritdoc />
-        public Webview(string label) : base("Webview")
-        {
-            Label = label;
-        }
-    }
-
-    /// <inheritdoc />
-    public sealed class WebviewWindow : EventTarget
-    {
-        /// <summary>
-        /// Label for the event target.
-        /// </summary>
-        public string Label { get; }
-
-        /// <inheritdoc />
-        public WebviewWindow(string label) : base("WebviewWindow")
-        {
-            Label = label;
-        }
+        return new EventTarget("AnyLabel", label);
     }
 }
 

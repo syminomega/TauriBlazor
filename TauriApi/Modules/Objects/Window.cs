@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using TauriApi.Modules;
@@ -28,28 +29,28 @@ internal class TauriWindow : ITauriWindow
     public async Task<UnlistenFn> Listen<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.Window(label));
+        var eventOption = new EventOptions(EventTarget.Window(label));
         return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Listen(string eventName, Func<Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.Window(label));
+        var eventOption = new EventOptions(EventTarget.Window(label));
         return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Once<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.Window(label));
+        var eventOption = new EventOptions(EventTarget.Window(label));
         return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Once(string eventName, Func<Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.Window(label));
+        var eventOption = new EventOptions(EventTarget.Window(label));
         return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 }
@@ -302,9 +303,34 @@ public record WindowOptions
 
     /// <summary>
     /// Sets a parent to the window to be created. Can be either a Window or a label of the window.
-    /// Platform-specific: Windows, Linux, macOS.
     /// </summary>
-    // TODO: parent
+    /// <remarks>
+    /// <para><strong>Platform-specific:</strong></para>
+    /// <list type="bullet">
+    /// <item>
+    /// <term>Windows:</term>
+    /// <description>This sets the passed parent as an owner window to the window to be created.
+    /// From <see href="https://docs.microsoft.com/en-us/windows/win32/winmsg/window-features#owned-windows">MSDN owned windows docs</see>:
+    /// <list type="bullet">
+    /// <item><description>An owned window is always above its owner in the z-order.</description></item>
+    /// <item><description>The system automatically destroys an owned window when its owner is destroyed.</description></item>
+    /// <item><description>An owned window is hidden when its owner is minimized.</description></item>
+    /// </list>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>Linux:</term>
+    /// <description>This makes the new window transient for parent, see <see href="https://docs.gtk.org/gtk3/method.Window.set_transient_for.html"/>.</description>
+    /// </item>
+    /// <item>
+    /// <term>macOS:</term>
+    /// <description>This adds the window as a child of parent, see <see href="https://developer.apple.com/documentation/appkit/nswindow/1419152-addchildwindow?language=objc"/>.</description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("parent")]
+    public string? ParentLabel { get; init; }
 
     /// <summary>
     /// Whether the window should be visible on all workspaces or virtual desktops.

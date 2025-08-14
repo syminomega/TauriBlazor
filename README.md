@@ -15,7 +15,7 @@ This template should help get you started developing with Tauri in Blazor, C#, C
 ## How To Use
 1. Add nuget package to your project.
 ```
-dotnet add package SyminStudio.TauriApi --version 0.4.4
+dotnet add package SyminStudio.TauriApi --version 0.6.1
 ```
 2. Add following contents to your `Program.cs` file.
 ```csharp

@@ -32,28 +32,28 @@ internal class TauriWebviewWindow : ITauriWebviewWindow
     public async Task<UnlistenFn> Listen<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.WebviewWindow(label));
+        var eventOption = new EventOptions(EventTarget.WebviewWindow(label));
         return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Listen(string eventName, Func<Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.WebviewWindow(label));
+        var eventOption = new EventOptions(EventTarget.WebviewWindow(label));
         return await _tauriEvent.Listen(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Once<TR>(string eventName, Func<TR, Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.WebviewWindow(label));
+        var eventOption = new EventOptions(EventTarget.WebviewWindow(label));
         return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 
     public async Task<UnlistenFn> Once(string eventName, Func<Task> callbackAsync)
     {
         var label = await Label;
-        var eventOption = new EventOptions(new EventTarget.WebviewWindow(label));
+        var eventOption = new EventOptions(EventTarget.WebviewWindow(label));
         return await _tauriEvent.Once(eventName, callbackAsync, eventOption);
     }
 }
