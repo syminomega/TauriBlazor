@@ -1,20 +1,32 @@
 @page "/Demo"
+@using TauriApi.Plugins
 
 @inject Tauri Tauri
+@inject TauriDialog TauriDialog
 @inject ILogger<Demo> Logger
 <h3>Demo</h3>
 <button @onclick="GetAllWindows">Get All Windows</button>
-@foreach(var window in _windows)
+@foreach (var window in _windows)
 {
     <div>
         <p>@window</p>
     </div>
 }
+<button @onclick="OpenDialog">Open File Dialog</button>
+
+<div>
+    <p>Selected files:</p>
+    @foreach (var file in _openDialogResult)
+    {
+        <p>@file</p>
+    }
+</div>
 
 @code {
     private bool _isTauri;
     private List<string> _windows = [];
-    
+    private List<string> _openDialogResult = [];
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -24,7 +36,7 @@
             await InitializeTauriDemo();
         }
     }
-    
+
     private async Task InitializeTauriDemo()
     {
         if (!_isTauri)
@@ -51,6 +63,26 @@
             var windowLabel = await tauriWindow.Label;
             _windows.Add(windowLabel);
         }
+
+        StateHasChanged();
+    }
+
+    private async Task OpenDialog()
+    {
+        var pathList = await TauriDialog.Open(new OpenMultipleDialogOptions
+        {
+            Filters =
+            [
+                new DialogFilter { Name = "image", Extensions = ["png", "jpeg", "jpg", "gif"] },
+            ]
+        });
+        _openDialogResult.Clear();
+        
+        foreach (var path in pathList)
+        {
+            _openDialogResult.Add(path);
+        }
+
         StateHasChanged();
     }
 

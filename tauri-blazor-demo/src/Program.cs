@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TauriApi;
+using TauriApi.Plugins;
 using TauriBlazorDemo;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -11,5 +12,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 // Add TauriApi services
 builder.Services.AddTauriApi();
+builder.Services.AddTauriPlugin<TauriDialog>();
 
 await builder.Build().RunAsync();
